@@ -20,6 +20,8 @@ library(httr)
 library(jsonlite)
 ```
 
+
+
 # Einleitung
 
 *\[Hier: Motivation, warum Genderrepräsentation im Film relevant ist. Forschungsfrage formulieren.\]*
@@ -33,6 +35,8 @@ library(jsonlite)
 ## SPARQL-Abfrage
 
 Die Daten wurden über den WikiData Query Service (`query.wikidata.org`) erhoben. Die folgende Abfrage holt alle Schauspieler\*innen mit mindestens einem verknüpften Film und Genre:
+
+
 
 ```{r sparql-query, cache=TRUE}
 query <- '
@@ -72,9 +76,13 @@ df_raw <- data$results$bindings |>
 glimpse(df_raw)
 ```
 
+
+
 # Methodik & Stichprobe
 
 *\[Hier: Wie wurde gefiltert? Warum welche Mindestanzahl an Filmen? Was wurde bereinigt?\]*
+
+
 
 ```{r datenbereinigung}
 df <- df_raw |>
@@ -96,11 +104,15 @@ df |>
   count(gender, name = "Anzahl Personen")
 ```
 
+
+
 # Ergebnisse
 
 ## Gesamtverteilung nach Geschlecht
 
 *\[Hier: Kurzer Text zur Grundverteilung – wie viele Männer/Frauen sind in der Stichprobe?\]*
+
+
 
 ```{r abb-grundverteilung, fig.cap="Abbildung 1: Anzahl Personen nach Geschlecht"}
 df |>
@@ -115,9 +127,13 @@ df |>
   theme_minimal()
 ```
 
+
+
 ## Genreverteilung nach Geschlecht
 
 *\[Hier: Hauptergebnis beschreiben. Welche Genres dominieren bei Frauen, welche bei Männern? Was fällt besonders auf?\]*
+
+
 
 ```{r abb-genre, fig.cap="Abbildung 2: Top-Genres nach Geschlecht (normalisiert)"}
 df |>
@@ -136,9 +152,13 @@ df |>
   theme_minimal()
 ```
 
+
+
 ## Genrekonzentration im Vergleich
 
 *\[Hier: Sind Frauen auf weniger Genres konzentriert als Männer? Gibt es "typisch weibliche" oder "typisch männliche" Genres?\]*
+
+
 
 ```{r abb-konzentration, fig.cap="Abbildung 3: Genrekonzentration nach Geschlecht"}
 df |>
@@ -156,6 +176,8 @@ df |>
   theme(legend.position = "none")
 ```
 
+
+
 # Diskussion
 
 *\[Hier: Sind die Unterschiede bedeutsam? Mögliche Erklärungen (Marktstrukturen, Rollenangebote, Bias in WikiData selbst). Grenzen der Analyse: Was kann WikiData nicht abbilden?\]*
@@ -167,3 +189,4 @@ df |>
 ------------------------------------------------------------------------
 
 *Alle Daten stammen aus WikiData und stehen unter der [CC0-Lizenz](https://creativecommons.org/publicdomain/zero/1.0/). Abfrage durchgeführt am `r Sys.Date()`.* \`\`\`
+
