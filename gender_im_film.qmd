@@ -22,30 +22,75 @@ library(jsonlite)
 
 # Einleitung
 
-*\[Hier: Motivation, warum Genderrepräsentation im Film relevant ist. Forschungsfrage formulieren.\]*
+*[Hier: Motivation, warum Genderrepräsentation im Film relevant ist. Forschungsfrage formulieren.]*
 
-**Forschungsfrage:** Unterscheidet sich die Genreverteilung von Filmen, in denen Schauspielerinnen vs. Schauspieler auftreten – und wenn ja, wie?
+**Forschungsfrage:** Unterscheidet sich die Genreverteilung von Filmen, in denen Schauspielerinnen
+vs. Schauspieler auftreten – und wenn ja, wie?
 
 # WikiData als Datenquelle
 
-*\[Hier: Kurze Erklärung was WikiData ist, wie SPARQL funktioniert, und welche Limitierungen die Quelle hat (z.B. unvollständige Einträge, kein vollständiges Abbild der Branche).\]*
+*[Hier: Kurze Erklärung was WikiData ist, wie SPARQL funktioniert, und welche Limitierungen
+die Quelle hat (z.B. unvollständige Einträge, kein vollständiges Abbild der Branche).]*
 
 ## SPARQL-Abfrage
 
-Die Daten wurden über den WikiData Query Service (`query.wikidata.org`) erhoben. Die folgende Abfrage holt alle Schauspieler\*innen mit mindestens einem verknüpften Film und Genre:
+Die Daten wurden über den WikiData Query Service (`query.wikidata.org`) erhoben.
+Die Abfrage ist in drei Schritte gegliedert: Vorfilterung der Personen, Hauptabfrage
+für Film- und Genredaten, sowie ein Genrefilter auf etablierte Hauptkategorien.
 
 ```{r sparql-query, cache=TRUE}
 query <- '
-SELECT ?person ?personLabel ?gender ?genderLabel ?film ?filmLabel ?genre ?genreLabel
+SELECT ?person ?personLabel ?genderLabel ?film ?filmLabel ?genre ?genreLabel ?year
 WHERE {
-  ?person wdt:P106 wd:Q33999 .       # Beruf: Schauspieler*in
-  ?person wdt:P21  ?gender .          # Geschlecht
-  ?film   wdt:P161 ?person .          # Film mit dieser Person
-  ?film   wdt:P136 ?genre .           # Genre des Films
-  FILTER(?gender IN (wd:Q6581072, wd:Q6581097))  # nur m/w
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "de,en" }
+  {
+    SELECT ?person (COUNT(DISTINCT ?film) AS ?filmCount)
+    WHERE {
+      ?person wdt:P106 wd:Q33999 .   # Beruf: Schauspieler*in
+      ?person wdt:P21  ?gender .     # Geschlecht muss vorhanden sein
+      ?film   wdt:P161 ?person .     # Film in dem die Person mitspielt
+      ?film   wdt:P495 wd:Q30 .      # Produktionsland: USA
+      ?film   wdt:P577 ?date .       # Erscheinungsdatum muss vorhanden sein
+      FILTER(YEAR(?date) = 2010)     # nur aus EINEM Jahr (Serverlast)
+      FILTER(?gender IN (wd:Q6581072, wd:Q6581097)) 
+    } 
+    GROUP BY ?person
+    HAVING(?filmCount > 4)           # Mindestens 5 Filme, Randpersonen rausfiltern
+  }
+
+  # für gefilterte Personen jetzt Film- und genredaten holen
+  ?person wdt:P21  ?gender .
+  ?film   wdt:P161 ?person .
+  ?film   wdt:P136 ?genre .
+  ?film   wdt:P495 wd:Q30 .
+  ?film   wdt:P577 ?date .
+  BIND(YEAR(?date) AS ?year)
+  FILTER(?year = 2010)
+  FILTER(?gender IN (wd:Q6581072, wd:Q6581097))
+  FILTER(?genre IN (
+    wd:Q130232,   # drama film
+    wd:Q157443,   # comedy film
+    wd:Q2484376,  # thriller film
+    wd:Q188473,   # action film
+    wd:Q645928,   # biographical film
+    wd:Q319221,   # adventure film
+    wd:Q24925,    # sci-fi film
+    wd:Q93204,    # documentary film
+    wd:Q157394,   # fantasy film
+    wd:Q369747,   # war film
+    wd:Q959790,   # crime film
+    wd:Q2743,     # musical film
+    wd:Q200092,   # horrorfilm
+    wd:Q853630,   # slasher film
+    wd:Q369747,   # war film
+    wd:Q1200678,  # mystery film
+    wd:Q1361932,  # family film
+    wd:Q1339864,  # sport film
+    wd:Q846544,   # disaster film
+    wd:Q17013749  # historical film
+  ))
+
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
 }
-LIMIT 20000
 '
 
 url <- paste0(
@@ -66,7 +111,8 @@ df_raw <- data$results$bindings |>
     gender      = genderLabel$value,
     film        = film$value,
     filmLabel   = filmLabel$value,
-    genre       = genreLabel$value
+    genre       = genreLabel$value,
+    year        = as.integer(year$value)
   )
 
 glimpse(df_raw)
@@ -74,21 +120,44 @@ glimpse(df_raw)
 
 # Methodik & Stichprobe
 
-*\[Hier: Wie wurde gefiltert? Warum welche Mindestanzahl an Filmen? Was wurde bereinigt?\]*
+Die Daten wurden über den WikiData Query Service mittels SPARQL erhoben. Als
+Grundgesamtheit dienen alle in WikiData erfassten Schauspieler\*innen (Property P106),
+die in US-amerikanischen Filmproduktionen (Produktionsland P495 = USA) mitgewirkt haben.
+Die Einschränkung auf das Produktionsland USA – statt auf die Nationalität der
+Schauspieler\*innen – wurde bewusst gewählt, da für eine Genreanalyse der
+Produktionskontext relevanter ist als die Herkunft der Person: Eine deutsche
+Schauspielerin in einem Hollywood-Film unterliegt denselben Produktions- und
+Genrestrukturen wie ihre amerikanischen Kolleg\*innen.
+
+Um die Analyse handhabbar zu halten und den technischen Limitierungen des WikiData
+Query Service (Timeout bei großen Abfragen) zu begegnen, wurden zwei weitere
+Einschränkungen vorgenommen. Erstens wurden nur Personen mit mehr als vier verzeichneten
+Filmkredits im Untersuchungszeitraum berücksichtigt, um Personen mit sehr marginaler
+Präsenz in der Branche auszuschließen und die Stabilität der Genrezuordnung zu erhöhen.
+Zweitens wurden die Genres auf 20 etablierte Hauptkategorien beschränkt. WikiData enthält
+hunderte von Genrebezeichnungen, die sich teils stark überschneiden oder sehr spezifisch
+sind. Durch die Beschränkung auf Hauptgenres wird einerseits die Abfragelast reduziert,
+andererseits eine sinnvolle Aggregationsebene für den Vergleich geschaffen. Filme, die
+ausschließlich Nischengenres zugeordnet sind, werden dadurch nicht berücksichtigt – dies
+ist eine bewusste methodische Vereinfachung, die im Rahmen dieser explorativen Analyse
+vertretbar ist.
+
+Es ist zudem zu beachten, dass WikiData kein vollständiges Abbild der Filmindustrie
+darstellt: Die Vollständigkeit der Einträge variiert stark, und weniger bekannte
+Produktionen oder Schauspieler\*innen sind häufig unvollständig dokumentiert. Die
+Ergebnisse spiegeln daher primär den gut dokumentierten Teil der US-Filmindustrie wider.
 
 ```{r datenbereinigung}
 df <- df_raw |>
+  # Sicherstellen dass jede Person-Film-Genre-Kombination nur einmal vorkommt
+  distinct(person, film, genre, .keep_all = TRUE) |>
   # Geschlecht vereinheitlichen
   mutate(gender = case_when(
     gender == "female" ~ "Schauspielerinnen",
     gender == "male"   ~ "Schauspieler",
     TRUE               ~ NA_character_
   )) |>
-  filter(!is.na(gender)) |>
-  # Nur Personen mit mind. 3 Filmkredits
-  group_by(person) |>
-  filter(n_distinct(film) >= 3) |>
-  ungroup()
+  filter(!is.na(gender))
 
 # Überblick Stichprobe
 df |>
@@ -100,7 +169,7 @@ df |>
 
 ## Gesamtverteilung nach Geschlecht
 
-*\[Hier: Kurzer Text zur Grundverteilung – wie viele Männer/Frauen sind in der Stichprobe?\]*
+*[Hier: Kurzer Text zur Grundverteilung – wie viele Männer/Frauen sind in der Stichprobe?]*
 
 ```{r abb-grundverteilung, fig.cap="Abbildung 1: Anzahl Personen nach Geschlecht"}
 df |>
@@ -117,7 +186,8 @@ df |>
 
 ## Genreverteilung nach Geschlecht
 
-*\[Hier: Hauptergebnis beschreiben. Welche Genres dominieren bei Frauen, welche bei Männern? Was fällt besonders auf?\]*
+*[Hier: Hauptergebnis beschreiben. Welche Genres dominieren bei Frauen, welche bei Männern?
+Was fällt besonders auf?]*
 
 ```{r abb-genre, fig.cap="Abbildung 2: Top-Genres nach Geschlecht (normalisiert)"}
 df |>
@@ -138,7 +208,8 @@ df |>
 
 ## Genrekonzentration im Vergleich
 
-*\[Hier: Sind Frauen auf weniger Genres konzentriert als Männer? Gibt es "typisch weibliche" oder "typisch männliche" Genres?\]*
+*[Hier: Sind Frauen auf weniger Genres konzentriert als Männer? Gibt es "typisch weibliche"
+oder "typisch männliche" Genres?]*
 
 ```{r abb-konzentration, fig.cap="Abbildung 3: Genrekonzentration nach Geschlecht"}
 df |>
@@ -158,12 +229,16 @@ df |>
 
 # Diskussion
 
-*\[Hier: Sind die Unterschiede bedeutsam? Mögliche Erklärungen (Marktstrukturen, Rollenangebote, Bias in WikiData selbst). Grenzen der Analyse: Was kann WikiData nicht abbilden?\]*
+*[Hier: Sind die Unterschiede bedeutsam? Mögliche Erklärungen (Marktstrukturen, Rollenangebote,
+Bias in WikiData selbst). Grenzen der Analyse: Was kann WikiData nicht abbilden?]*
 
 # Fazit
 
-*\[Hier: Kurze Zusammenfassung der Hauptbefunde + ein Satz Ausblick.\]*
+*[Hier: Kurze Zusammenfassung der Hauptbefunde + ein Satz Ausblick.]*
 
-------------------------------------------------------------------------
+---
 
-*Alle Daten stammen aus WikiData und stehen unter der [CC0-Lizenz](https://creativecommons.org/publicdomain/zero/1.0/). Abfrage durchgeführt am `r Sys.Date()`.* \`\`\`
+*Alle Daten stammen aus WikiData und stehen unter der [CC0-Lizenz](https://creativecommons.org/publicdomain/zero/1.0/).
+Abfrage durchgeführt am `r Sys.Date()`.*
+```
+
