@@ -1,4 +1,4 @@
----
+ ---
 title: "Geschlecht und Genre: Eine WikiData-Analyse zur Repräsentation von Schauspieler*innen"
 author: "Vorname Nachname"
 date: today
@@ -24,7 +24,7 @@ library(jsonlite)
 
 *\[Hier: Motivation, warum Genderrepräsentation im Film relevant ist. Forschungsfrage formulieren.\]*
 
-**Forschungsfrage:** Unterscheidet sich die Genreverteilung von Filmen, in denen Schauspielerinnen vs. Schauspieler auftreten – und wenn ja, wie?
+**Forschungsfrage:** Unterscheidet sich die Genreverteilung von Filmen, in denen Schauspielerinnen vs. Schauspieler auftreten seit 2016 – und wenn ja, wie?
 
 # WikiData als Datenquelle
 
@@ -33,86 +33,74 @@ library(jsonlite)
 ## SPARQL-Abfrage
 
 Die Daten wurden über den WikiData Query Service (`query.wikidata.org`) erhoben. Die Abfrage ist in drei Schritte gegliedert: Vorfilterung der Personen, Hauptabfrage für Film- und Genredaten, sowie ein Genrefilter auf etablierte Hauptkategorien.
-
-```{r sparql-query, cache=TRUE}
-query <- '
-SELECT ?person ?personLabel ?genderLabel ?film ?filmLabel ?genre ?genreLabel ?year
+SELECT ?genreLabel (COUNT(?film) AS ?anzahl)
 WHERE {
+  ?film wdt:P31 wd:Q11424 ;
+        wdt:P577 ?datum ;
+        wdt:P136/rdfs:label ?genreLabel .
+  FILTER(YEAR(?datum) >= 2016)
+  FILTER(LANG(?genreLabel) = "en")
+}
+GROUP BY ?genreLabel
+ORDER BY DESC(?anzahl)
+LIMIT 20
+
+
+
+
+
+
+SELECT ?genderLabel ?genreLabel
+       (COUNT(DISTINCT ?person) AS ?actorCount)
+WHERE {
+
   {
-    SELECT ?person (COUNT(DISTINCT ?film) AS ?filmCount)
+    SELECT ?person
     WHERE {
-      ?person wdt:P106 wd:Q33999 .   # Beruf: Schauspieler*in
-      ?person wdt:P21  ?gender .     # Geschlecht muss vorhanden sein
-      ?film   wdt:P161 ?person .     # Film in dem die Person mitspielt
-      ?film   wdt:P495 wd:Q30 .      # Produktionsland: USA
-      ?film   wdt:P577 ?date .       # Erscheinungsdatum muss vorhanden sein
-      FILTER(YEAR(?date) = 2010)     # nur aus EINEM Jahr (Serverlast)
-      FILTER(?gender IN (wd:Q6581072, wd:Q6581097)) 
-    } 
+      ?film wdt:P31 wd:Q11424 ;
+            wdt:P161 ?person ;
+            wdt:P495 wd:Q30 ;
+            wdt:P577 ?date .
+
+      FILTER(YEAR(?date) = 2020)
+    }
     GROUP BY ?person
-    HAVING(?filmCount > 4)           # Mindestens 5 Filme, Randpersonen rausfiltern
+    HAVING(COUNT(DISTINCT ?film) > 0)
   }
 
-  # für gefilterte Personen jetzt Film- und genredaten holen
-  ?person wdt:P21  ?gender .
-  ?film   wdt:P161 ?person .
-  ?film   wdt:P136 ?genre .
-  ?film   wdt:P495 wd:Q30 .
-  ?film   wdt:P577 ?date .
-  BIND(YEAR(?date) AS ?year)
-  FILTER(?year = 2010)
-  FILTER(?gender IN (wd:Q6581072, wd:Q6581097))
+  ?film wdt:P31 wd:Q11424 ;
+        wdt:P161 ?person ;
+        wdt:P495 wd:Q30 ;
+        wdt:P577 ?date ;
+        wdt:P136 ?genre .
+
+  FILTER(YEAR(?date) = 2020)
+
   FILTER(?genre IN (
-    wd:Q130232,   # drama film
-    wd:Q157443,   # comedy film
-    wd:Q2484376,  # thriller film
-    wd:Q188473,   # action film
-    wd:Q645928,   # biographical film
-    wd:Q319221,   # adventure film
-    wd:Q24925,    # sci-fi film
-    wd:Q93204,    # documentary film
-    wd:Q157394,   # fantasy film
-    wd:Q369747,   # war film
-    wd:Q959790,   # crime film
-    wd:Q2743,     # musical film
-    wd:Q200092,   # horrorfilm
-    wd:Q853630,   # slasher film
-    wd:Q369747,   # war film
-    wd:Q1200678,  # mystery film
-    wd:Q1361932,  # family film
-    wd:Q1339864,  # sport film
-    wd:Q846544,   # disaster film
-    wd:Q17013749  # historical film
+      wd:Q130232,   # drama film
+      wd:Q157443,   # comedy film
+      wd:Q2484376,  # thriller
+      wd:Q188473,   # action film
+      wd:Q319221,   # adventure film
+      wd:Q959790,   # crime film
+      wd:Q200092,   # horror film
+      wd:Q93204,    # documentary film
+      wd:Q1054574,  # romance film
+      wd:Q859369    # comedy-drama film
   ))
 
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
+  ?person wdt:P106 wd:Q33999 ;
+          wdt:P21 ?gender .
+
+  FILTER(?gender IN (wd:Q6581072, wd:Q6581097))
+
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "en" .
+  }
 }
-'
 
-url <- paste0(
-  "https://query.wikidata.org/sparql?query=",
-  URLencode(query),
-  "&format=json"
-)
-
-response <- GET(url, add_headers("User-Agent" = "GenderFilmAnalysis/1.0"))
-raw      <- content(response, as = "text", encoding = "UTF-8")
-data     <- fromJSON(raw)
-
-df_raw <- data$results$bindings |>
-  as_tibble() |>
-  transmute(
-    person      = person$value,
-    personLabel = personLabel$value,
-    gender      = genderLabel$value,
-    film        = film$value,
-    filmLabel   = filmLabel$value,
-    genre       = genreLabel$value,
-    year        = as.integer(year$value)
-  )
-
-glimpse(df_raw)
-```
+GROUP BY ?genre ?genreLabel ?gender ?genderLabel
+ORDER BY ?genreLabel ?genderLabel
 
 # Methodik & Stichprobe
 
