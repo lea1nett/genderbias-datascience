@@ -1,4 +1,4 @@
- ---
+---
 title: "Geschlecht und Genre: Eine WikiData-Analyse zur Repräsentation von Schauspieler*innen"
 author: "Vorname Nachname"
 date: today
@@ -14,188 +14,245 @@ format:
 lang: de
 ---
 
-```{r setup, include=FALSE}
-library(tidyverse)
-library(httr)
-library(jsonlite)
+```{python}
+#| include: false
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
+import seaborn as sns
+import requests
+from datetime import date
 ```
 
 # Einleitung
 
-*\[Hier: Motivation, warum Genderrepräsentation im Film relevant ist. Forschungsfrage formulieren.\]*
+*[Hier: Motivation, warum Genderrepräsentation im Film relevant ist. Forschungsfrage formulieren.]*
 
-**Forschungsfrage:** Unterscheidet sich die Genreverteilung von Filmen, in denen Schauspielerinnen vs. Schauspieler auftreten seit 2016 – und wenn ja, wie?
+**Forschungsfrage:** Unterscheidet sich die Genreverteilung von Filmen, in denen Schauspielerinnen
+vs. Schauspieler auftreten – und wenn ja, wie?
 
 # WikiData als Datenquelle
 
-*\[Hier: Kurze Erklärung was WikiData ist, wie SPARQL funktioniert, und welche Limitierungen die Quelle hat (z.B. unvollständige Einträge, kein vollständiges Abbild der Branche).\]*
+*[Hier: Kurze Erklärung was WikiData ist, wie SPARQL funktioniert, und welche Limitierungen
+die Quelle hat (z.B. unvollständige Einträge, kein vollständiges Abbild der Branche).]*
 
 ## SPARQL-Abfrage
 
-Die Daten wurden über den WikiData Query Service (`query.wikidata.org`) erhoben. Die Abfrage ist in drei Schritte gegliedert: Vorfilterung der Personen, Hauptabfrage für Film- und Genredaten, sowie ein Genrefilter auf etablierte Hauptkategorien.
-SELECT ?genreLabel (COUNT(?film) AS ?anzahl)
-WHERE {
-  ?film wdt:P31 wd:Q11424 ;
-        wdt:P577 ?datum ;
-        wdt:P136/rdfs:label ?genreLabel .
-  FILTER(YEAR(?datum) >= 2016)
-  FILTER(LANG(?genreLabel) = "en")
-}
-GROUP BY ?genreLabel
-ORDER BY DESC(?anzahl)
-LIMIT 20
+Die Daten wurden über den WikiData Query Service (`query.wikidata.org`) erhoben.
+Die Abfrage gibt für jede Kombination aus Geschlecht und Genre die Anzahl
+der distinct Schauspieler*innen zurück, die 2020 in einer US-Produktion dieses Genres
+mitgewirkt haben.
 
+```{python}
+#| cache: true
+#| label: sparql-query
 
-
-
-
-
+query = """
 SELECT ?genderLabel ?genreLabel
        (COUNT(DISTINCT ?person) AS ?actorCount)
 WHERE {
 
+  # SCHRITT 1: Vorfilterung auf Personen mit mind. 1 US-Film in 2020.
+  # Die Subquery reduziert die Datenmenge bevor der Rest der Abfrage läuft
+  # und verhindert einen Timeout auf dem WikiData Query Service.
   {
     SELECT ?person
     WHERE {
-      ?film wdt:P31 wd:Q11424 ;
-            wdt:P161 ?person ;
-            wdt:P495 wd:Q30 ;
-            wdt:P577 ?date .
-
+      ?film wdt:P31  wd:Q11424 ;   # ist ein Film
+            wdt:P161 ?person ;      # mit dieser Person
+            wdt:P495 wd:Q30 ;       # Produktionsland: USA
+            wdt:P577 ?date .        # Erscheinungsdatum
       FILTER(YEAR(?date) = 2020)
     }
     GROUP BY ?person
     HAVING(COUNT(DISTINCT ?film) > 0)
   }
 
-  ?film wdt:P31 wd:Q11424 ;
-        wdt:P161 ?person ;
-        wdt:P495 wd:Q30 ;
-        wdt:P577 ?date ;
-        wdt:P136 ?genre .
+  # SCHRITT 2: Hauptabfrage
+  # Für die gefilterten Personen Genre und Geschlecht holen.
+  ?film wdt:P31  wd:Q11424 ;        # ist ein Film
+        wdt:P161 ?person ;           # mit dieser Person
+        wdt:P495 wd:Q30 ;            # Produktionsland: USA
+        wdt:P577 ?date ;             # Erscheinungsdatum
+        wdt:P136 ?genre .            # Genre des Films
 
   FILTER(YEAR(?date) = 2020)
 
+  # SCHRITT 3: Genrefilter
+  # Nur etablierte Hauptgenres behalten. WikiData enthält hunderte von
+  # Genrebezeichnungen die sich teils stark überschneiden. Die Beschränkung
+  # auf 10 Hauptkategorien schafft eine sinnvolle Aggregationsebene.
   FILTER(?genre IN (
-      wd:Q130232,   # drama film
-      wd:Q157443,   # comedy film
-      wd:Q2484376,  # thriller
-      wd:Q188473,   # action film
-      wd:Q319221,   # adventure film
-      wd:Q959790,   # crime film
-      wd:Q200092,   # horror film
-      wd:Q93204,    # documentary film
-      wd:Q1054574,  # romance film
-      wd:Q859369    # comedy-drama film
+    wd:Q130232,   # drama film
+    wd:Q157443,   # comedy film
+    wd:Q2484376,  # thriller
+    wd:Q188473,   # action film
+    wd:Q319221,   # adventure film
+    wd:Q959790,   # crime film
+    wd:Q200092,   # horror film
+    wd:Q93204,    # documentary film
+    wd:Q1054574,  # romance film
+    wd:Q859369    # comedy-drama film
   ))
 
-  ?person wdt:P106 wd:Q33999 ;
-          wdt:P21 ?gender .
+  # Schauspieler*innen-Filter und Geschlecht
+  ?person wdt:P106 wd:Q33999 ;      # Beruf: Schauspieler*in
+          wdt:P21  ?gender .         # Geschlecht
 
-  FILTER(?gender IN (wd:Q6581072, wd:Q6581097))
+  FILTER(?gender IN (
+    wd:Q6581072,                     # weiblich
+    wd:Q6581097                      # männlich
+  ))
 
+  # Lesbare Labels für Genre und Geschlecht auf Englisch
   SERVICE wikibase:label {
     bd:serviceParam wikibase:language "en" .
   }
 }
-
 GROUP BY ?genre ?genreLabel ?gender ?genderLabel
 ORDER BY ?genreLabel ?genderLabel
+"""
+
+url = "https://query.wikidata.org/sparql"
+response = requests.get(
+    url,
+    params={"query": query, "format": "json"},
+    headers={"User-Agent": "GenderFilmAnalysis/1.0"}
+)
+
+results = response.json()["results"]["bindings"]
+df_raw = pd.DataFrame([{
+    "gender": r["genderLabel"]["value"],
+    "genre":  r["genreLabel"]["value"],
+    "count":  int(r["actorCount"]["value"])
+} for r in results])
+
+df_raw
+```
 
 # Methodik & Stichprobe
 
-Die Daten wurden über den WikiData Query Service mittels SPARQL erhoben. Als Grundgesamtheit dienen alle in WikiData erfassten Schauspieler\*innen (Property P106), die in US-amerikanischen Filmproduktionen (Produktionsland P495 = USA) mitgewirkt haben. Die Einschränkung auf das Produktionsland USA – statt auf die Nationalität der Schauspieler\*innen – wurde bewusst gewählt, da für eine Genreanalyse der Produktionskontext relevanter ist als die Herkunft der Person: Eine deutsche Schauspielerin in einem Hollywood-Film unterliegt denselben Produktions- und Genrestrukturen wie ihre amerikanischen Kolleg\*innen.
+Die Daten wurden über den WikiData Query Service mittels SPARQL erhoben. Als
+Grundgesamtheit dienen alle in WikiData erfassten Schauspieler\*innen (Property P106),
+die in US-amerikanischen Filmproduktionen (Produktionsland P495 = USA) mitgewirkt haben.
+Die Einschränkung auf das Produktionsland USA – statt auf die Nationalität der
+Schauspieler\*innen – wurde bewusst gewählt, da für eine Genreanalyse der
+Produktionskontext relevanter ist als die Herkunft der Person: Eine deutsche
+Schauspielerin in einem Hollywood-Film unterliegt denselben Produktions- und
+Genrestrukturen wie ihre amerikanischen Kolleg\*innen.
 
-Um die Analyse handhabbar zu halten und den technischen Limitierungen des WikiData Query Service (Timeout bei großen Abfragen) zu begegnen, wurden zwei weitere Einschränkungen vorgenommen. Erstens wurden nur Personen mit mehr als vier verzeichneten Filmkredits im Untersuchungszeitraum berücksichtigt, um Personen mit sehr marginaler Präsenz in der Branche auszuschließen und die Stabilität der Genrezuordnung zu erhöhen. Zweitens wurden die Genres auf 20 etablierte Hauptkategorien beschränkt. WikiData enthält hunderte von Genrebezeichnungen, die sich teils stark überschneiden oder sehr spezifisch sind. Durch die Beschränkung auf Hauptgenres wird einerseits die Abfragelast reduziert, andererseits eine sinnvolle Aggregationsebene für den Vergleich geschaffen. Filme, die ausschließlich Nischengenres zugeordnet sind, werden dadurch nicht berücksichtigt – dies ist eine bewusste methodische Vereinfachung, die im Rahmen dieser explorativen Analyse vertretbar ist.
+Da direkte Rohdaten auf Personenebene zu einem Timeout auf dem WikiData Query Service
+führten, wurden die Daten bereits in der SPARQL-Abfrage aggregiert: Zurückgegeben wird
+die Anzahl distinct Schauspieler\*innen pro Genre und Geschlecht (`COUNT(DISTINCT ?person)`).
+Dies ist für die Kernfrage der Genreverteilung methodisch ausreichend. Zusätzlich wurden
+die Genres auf 10 etablierte Hauptkategorien beschränkt. WikiData enthält hunderte von
+Genrebezeichnungen, die sich teils stark überschneiden oder sehr spezifisch sind. Durch
+die Beschränkung auf Hauptgenres wird einerseits die Abfragelast reduziert, andererseits
+eine sinnvolle Aggregationsebene für den Vergleich geschaffen. Filme, die ausschließlich
+Nischengenres zugeordnet sind, werden dadurch nicht berücksichtigt – dies ist eine
+bewusste methodische Vereinfachung, die im Rahmen dieser explorativen Analyse vertretbar
+ist.
 
-Es ist zudem zu beachten, dass WikiData kein vollständiges Abbild der Filmindustrie darstellt: Die Vollständigkeit der Einträge variiert stark, und weniger bekannte Produktionen oder Schauspieler\*innen sind häufig unvollständig dokumentiert. Die Ergebnisse spiegeln daher primär den gut dokumentierten Teil der US-Filmindustrie wider.
+Es ist zudem zu beachten, dass WikiData kein vollständiges Abbild der Filmindustrie
+darstellt: Die Vollständigkeit der Einträge variiert stark, und weniger bekannte
+Produktionen oder Schauspieler\*innen sind häufig unvollständig dokumentiert. Die
+Ergebnisse spiegeln daher primär den gut dokumentierten Teil der US-Filmindustrie wider.
 
-```{r datenbereinigung}
-df <- df_raw |>
-  # Sicherstellen dass jede Person-Film-Genre-Kombination nur einmal vorkommt
-  distinct(person, film, genre, .keep_all = TRUE) |>
-  # Geschlecht vereinheitlichen
-  mutate(gender = case_when(
-    gender == "female" ~ "Schauspielerinnen",
-    gender == "male"   ~ "Schauspieler",
-    TRUE               ~ NA_character_
-  )) |>
-  filter(!is.na(gender))
+```{python}
+#| label: datenbereinigung
+
+# Geschlecht vereinheitlichen
+df = df_raw.copy()
+df["gender"] = df["gender"].map({
+    "female": "Schauspielerinnen",
+    "male":   "Schauspieler"
+})
+df = df.dropna(subset=["gender"])
 
 # Überblick Stichprobe
-df |>
-  distinct(person, gender) |>
-  count(gender, name = "Anzahl Personen")
+df.groupby("gender")["count"].sum().reset_index(name="Gesamtanzahl")
 ```
 
 # Ergebnisse
 
 ## Gesamtverteilung nach Geschlecht
 
-*\[Hier: Kurzer Text zur Grundverteilung – wie viele Männer/Frauen sind in der Stichprobe?\]*
+*[Hier: Kurzer Text zur Grundverteilung – wie viele Männer/Frauen sind insgesamt vertreten?]*
 
-```{r abb-grundverteilung, fig.cap="Abbildung 1: Anzahl Personen nach Geschlecht"}
-df |>
-  distinct(person, gender) |>
-  count(gender) |>
-  ggplot(aes(x = gender, y = n, fill = gender)) +
-  geom_col(show.legend = FALSE) +
-  labs(
-    title = "Schauspieler*innen in der Stichprobe",
-    x = NULL, y = "Anzahl Personen"
-  ) +
-  theme_minimal()
+```{python}
+#| label: abb-grundverteilung
+#| fig-cap: "Abbildung 1: Gesamtanzahl Schauspieler*innen nach Geschlecht"
+
+total = df.groupby("gender")["count"].sum().reset_index()
+
+fig, ax = plt.subplots(figsize=(6, 4))
+sns.barplot(data=total, x="gender", y="count", palette="muted", ax=ax)
+ax.set(title="Schauspieler*innen in der Stichprobe (2020)",
+       xlabel=None, ylabel="Anzahl")
+plt.tight_layout()
+plt.show()
 ```
 
 ## Genreverteilung nach Geschlecht
 
-*\[Hier: Hauptergebnis beschreiben. Welche Genres dominieren bei Frauen, welche bei Männern? Was fällt besonders auf?\]*
+*[Hier: Hauptergebnis beschreiben. Welche Genres dominieren bei Frauen, welche bei Männern?
+Was fällt besonders auf?]*
 
-```{r abb-genre, fig.cap="Abbildung 2: Top-Genres nach Geschlecht (normalisiert)"}
-df |>
-  count(gender, genre) |>
-  group_by(gender) |>
-  mutate(anteil = n / sum(n)) |>
-  slice_max(anteil, n = 10) |>
-  ggplot(aes(x = reorder(genre, anteil), y = anteil, fill = gender)) +
-  geom_col(show.legend = FALSE) +
-  coord_flip() +
-  facet_wrap(~gender, scales = "free_y") +
-  labs(
-    title = "Top 10 Genres nach Geschlecht",
-    x = NULL, y = "Anteil (normalisiert)"
-  ) +
-  theme_minimal()
+```{python}
+#| label: abb-genre
+#| fig-cap: "Abbildung 2: Anzahl Schauspieler*innen pro Genre nach Geschlecht"
+
+genre_order = (df.groupby("genre")["count"].sum()
+               .sort_values(ascending=False).index)
+
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.barplot(data=df, x="count", y="genre", hue="gender",
+            order=genre_order, palette="muted", ax=ax)
+ax.set(title="Genreverteilung nach Geschlecht (2020)",
+       xlabel="Anzahl Schauspieler*innen", ylabel=None)
+ax.legend(title=None)
+plt.tight_layout()
+plt.show()
 ```
 
-## Genrekonzentration im Vergleich
+## Normalisierter Vergleich
 
-*\[Hier: Sind Frauen auf weniger Genres konzentriert als Männer? Gibt es "typisch weibliche" oder "typisch männliche" Genres?\]*
+*[Hier: Sind Frauen in bestimmten Genres über- oder unterrepräsentiert, relativ zu ihrem
+Gesamtanteil? Das normalisierte Diagramm macht Muster sichtbar die in absoluten Zahlen
+versteckt sind.]*
 
-```{r abb-konzentration, fig.cap="Abbildung 3: Genrekonzentration nach Geschlecht"}
-df |>
-  count(gender, genre) |>
-  group_by(gender) |>
-  mutate(anteil = n / sum(n)) |>
-  ggplot(aes(x = anteil, fill = gender)) +
-  geom_histogram(bins = 30, alpha = 0.7, position = "identity") +
-  facet_wrap(~gender) +
-  labs(
-    title = "Verteilung der Genreanteile",
-    x = "Anteil pro Genre", y = "Häufigkeit"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "none")
+```{python}
+#| label: abb-normalisiert
+#| fig-cap: "Abbildung 3: Genreanteil innerhalb jeder Geschlechtsgruppe (normalisiert)"
+
+df_norm = df.copy()
+df_norm["anteil"] = df_norm.groupby("gender")["count"].transform(
+    lambda x: x / x.sum()
+)
+
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.barplot(data=df_norm, x="anteil", y="genre", hue="gender",
+            order=genre_order, palette="muted", ax=ax)
+ax.xaxis.set_major_formatter(mticker.PercentFormatter(xmax=1))
+ax.set(title="Normalisierte Genreverteilung nach Geschlecht (2020)",
+       xlabel="Anteil innerhalb der Gruppe", ylabel=None)
+ax.legend(title=None)
+plt.tight_layout()
+plt.show()
 ```
 
 # Diskussion
 
-*\[Hier: Sind die Unterschiede bedeutsam? Mögliche Erklärungen (Marktstrukturen, Rollenangebote, Bias in WikiData selbst). Grenzen der Analyse: Was kann WikiData nicht abbilden?\]*
+*[Hier: Sind die Unterschiede bedeutsam? Mögliche Erklärungen (Marktstrukturen,
+Rollenangebote, Bias in WikiData selbst). Grenzen der Analyse: Was kann WikiData
+nicht abbilden?]*
 
 # Fazit
 
-*\[Hier: Kurze Zusammenfassung der Hauptbefunde + ein Satz Ausblick.\]*
+*[Hier: Kurze Zusammenfassung der Hauptbefunde + ein Satz Ausblick.]*
 
-------------------------------------------------------------------------
+---
 
-*Alle Daten stammen aus WikiData und stehen unter der [CC0-Lizenz](https://creativecommons.org/publicdomain/zero/1.0/). Abfrage durchgeführt am `r Sys.Date()`.* \`\`\`
+*Alle Daten stammen aus WikiData und stehen unter der
+[CC0-Lizenz](https://creativecommons.org/publicdomain/zero/1.0/).
+Abfrage durchgeführt am `{python} str(date.today())`.*
