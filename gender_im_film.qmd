@@ -22,21 +22,17 @@ library(jsonlite)
 
 # Einleitung
 
-*[Hier: Motivation, warum Genderrepräsentation im Film relevant ist. Forschungsfrage formulieren.]*
+*\[Hier: Motivation, warum Genderrepräsentation im Film relevant ist. Forschungsfrage formulieren.\]*
 
-**Forschungsfrage:** Unterscheidet sich die Genreverteilung von Filmen, in denen Schauspielerinnen
-vs. Schauspieler auftreten – und wenn ja, wie?
+**Forschungsfrage:** Unterscheidet sich die Genreverteilung von Filmen, in denen Schauspielerinnen vs. Schauspieler auftreten – und wenn ja, wie?
 
 # WikiData als Datenquelle
 
-*[Hier: Kurze Erklärung was WikiData ist, wie SPARQL funktioniert, und welche Limitierungen
-die Quelle hat (z.B. unvollständige Einträge, kein vollständiges Abbild der Branche).]*
+*\[Hier: Kurze Erklärung was WikiData ist, wie SPARQL funktioniert, und welche Limitierungen die Quelle hat (z.B. unvollständige Einträge, kein vollständiges Abbild der Branche).\]*
 
 ## SPARQL-Abfrage
 
-Die Daten wurden über den WikiData Query Service (`query.wikidata.org`) erhoben.
-Die Abfrage ist in drei Schritte gegliedert: Vorfilterung der Personen, Hauptabfrage
-für Film- und Genredaten, sowie ein Genrefilter auf etablierte Hauptkategorien.
+Die Daten wurden über den WikiData Query Service (`query.wikidata.org`) erhoben. Die Abfrage ist in drei Schritte gegliedert: Vorfilterung der Personen, Hauptabfrage für Film- und Genredaten, sowie ein Genrefilter auf etablierte Hauptkategorien.
 
 ```{r sparql-query, cache=TRUE}
 query <- '
@@ -120,32 +116,11 @@ glimpse(df_raw)
 
 # Methodik & Stichprobe
 
-Die Daten wurden über den WikiData Query Service mittels SPARQL erhoben. Als
-Grundgesamtheit dienen alle in WikiData erfassten Schauspieler\*innen (Property P106),
-die in US-amerikanischen Filmproduktionen (Produktionsland P495 = USA) mitgewirkt haben.
-Die Einschränkung auf das Produktionsland USA – statt auf die Nationalität der
-Schauspieler\*innen – wurde bewusst gewählt, da für eine Genreanalyse der
-Produktionskontext relevanter ist als die Herkunft der Person: Eine deutsche
-Schauspielerin in einem Hollywood-Film unterliegt denselben Produktions- und
-Genrestrukturen wie ihre amerikanischen Kolleg\*innen.
+Die Daten wurden über den WikiData Query Service mittels SPARQL erhoben. Als Grundgesamtheit dienen alle in WikiData erfassten Schauspieler\*innen (Property P106), die in US-amerikanischen Filmproduktionen (Produktionsland P495 = USA) mitgewirkt haben. Die Einschränkung auf das Produktionsland USA – statt auf die Nationalität der Schauspieler\*innen – wurde bewusst gewählt, da für eine Genreanalyse der Produktionskontext relevanter ist als die Herkunft der Person: Eine deutsche Schauspielerin in einem Hollywood-Film unterliegt denselben Produktions- und Genrestrukturen wie ihre amerikanischen Kolleg\*innen.
 
-Um die Analyse handhabbar zu halten und den technischen Limitierungen des WikiData
-Query Service (Timeout bei großen Abfragen) zu begegnen, wurden zwei weitere
-Einschränkungen vorgenommen. Erstens wurden nur Personen mit mehr als vier verzeichneten
-Filmkredits im Untersuchungszeitraum berücksichtigt, um Personen mit sehr marginaler
-Präsenz in der Branche auszuschließen und die Stabilität der Genrezuordnung zu erhöhen.
-Zweitens wurden die Genres auf 20 etablierte Hauptkategorien beschränkt. WikiData enthält
-hunderte von Genrebezeichnungen, die sich teils stark überschneiden oder sehr spezifisch
-sind. Durch die Beschränkung auf Hauptgenres wird einerseits die Abfragelast reduziert,
-andererseits eine sinnvolle Aggregationsebene für den Vergleich geschaffen. Filme, die
-ausschließlich Nischengenres zugeordnet sind, werden dadurch nicht berücksichtigt – dies
-ist eine bewusste methodische Vereinfachung, die im Rahmen dieser explorativen Analyse
-vertretbar ist.
+Um die Analyse handhabbar zu halten und den technischen Limitierungen des WikiData Query Service (Timeout bei großen Abfragen) zu begegnen, wurden zwei weitere Einschränkungen vorgenommen. Erstens wurden nur Personen mit mehr als vier verzeichneten Filmkredits im Untersuchungszeitraum berücksichtigt, um Personen mit sehr marginaler Präsenz in der Branche auszuschließen und die Stabilität der Genrezuordnung zu erhöhen. Zweitens wurden die Genres auf 20 etablierte Hauptkategorien beschränkt. WikiData enthält hunderte von Genrebezeichnungen, die sich teils stark überschneiden oder sehr spezifisch sind. Durch die Beschränkung auf Hauptgenres wird einerseits die Abfragelast reduziert, andererseits eine sinnvolle Aggregationsebene für den Vergleich geschaffen. Filme, die ausschließlich Nischengenres zugeordnet sind, werden dadurch nicht berücksichtigt – dies ist eine bewusste methodische Vereinfachung, die im Rahmen dieser explorativen Analyse vertretbar ist.
 
-Es ist zudem zu beachten, dass WikiData kein vollständiges Abbild der Filmindustrie
-darstellt: Die Vollständigkeit der Einträge variiert stark, und weniger bekannte
-Produktionen oder Schauspieler\*innen sind häufig unvollständig dokumentiert. Die
-Ergebnisse spiegeln daher primär den gut dokumentierten Teil der US-Filmindustrie wider.
+Es ist zudem zu beachten, dass WikiData kein vollständiges Abbild der Filmindustrie darstellt: Die Vollständigkeit der Einträge variiert stark, und weniger bekannte Produktionen oder Schauspieler\*innen sind häufig unvollständig dokumentiert. Die Ergebnisse spiegeln daher primär den gut dokumentierten Teil der US-Filmindustrie wider.
 
 ```{r datenbereinigung}
 df <- df_raw |>
@@ -169,7 +144,7 @@ df |>
 
 ## Gesamtverteilung nach Geschlecht
 
-*[Hier: Kurzer Text zur Grundverteilung – wie viele Männer/Frauen sind in der Stichprobe?]*
+*\[Hier: Kurzer Text zur Grundverteilung – wie viele Männer/Frauen sind in der Stichprobe?\]*
 
 ```{r abb-grundverteilung, fig.cap="Abbildung 1: Anzahl Personen nach Geschlecht"}
 df |>
@@ -186,8 +161,7 @@ df |>
 
 ## Genreverteilung nach Geschlecht
 
-*[Hier: Hauptergebnis beschreiben. Welche Genres dominieren bei Frauen, welche bei Männern?
-Was fällt besonders auf?]*
+*\[Hier: Hauptergebnis beschreiben. Welche Genres dominieren bei Frauen, welche bei Männern? Was fällt besonders auf?\]*
 
 ```{r abb-genre, fig.cap="Abbildung 2: Top-Genres nach Geschlecht (normalisiert)"}
 df |>
@@ -208,8 +182,7 @@ df |>
 
 ## Genrekonzentration im Vergleich
 
-*[Hier: Sind Frauen auf weniger Genres konzentriert als Männer? Gibt es "typisch weibliche"
-oder "typisch männliche" Genres?]*
+*\[Hier: Sind Frauen auf weniger Genres konzentriert als Männer? Gibt es "typisch weibliche" oder "typisch männliche" Genres?\]*
 
 ```{r abb-konzentration, fig.cap="Abbildung 3: Genrekonzentration nach Geschlecht"}
 df |>
@@ -229,16 +202,12 @@ df |>
 
 # Diskussion
 
-*[Hier: Sind die Unterschiede bedeutsam? Mögliche Erklärungen (Marktstrukturen, Rollenangebote,
-Bias in WikiData selbst). Grenzen der Analyse: Was kann WikiData nicht abbilden?]*
+*\[Hier: Sind die Unterschiede bedeutsam? Mögliche Erklärungen (Marktstrukturen, Rollenangebote, Bias in WikiData selbst). Grenzen der Analyse: Was kann WikiData nicht abbilden?\]*
 
 # Fazit
 
-*[Hier: Kurze Zusammenfassung der Hauptbefunde + ein Satz Ausblick.]*
+*\[Hier: Kurze Zusammenfassung der Hauptbefunde + ein Satz Ausblick.\]*
 
----
+------------------------------------------------------------------------
 
-*Alle Daten stammen aus WikiData und stehen unter der [CC0-Lizenz](https://creativecommons.org/publicdomain/zero/1.0/).
-Abfrage durchgeführt am `r Sys.Date()`.*
-```
-
+*Alle Daten stammen aus WikiData und stehen unter der [CC0-Lizenz](https://creativecommons.org/publicdomain/zero/1.0/). Abfrage durchgeführt am `r Sys.Date()`.* \`\`\`
