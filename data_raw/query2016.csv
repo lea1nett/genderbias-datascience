@@ -1,0 +1,23 @@
+genreLabel,genderLabel,actorCount
+action film,female,303
+action film,male,750
+adventure film,female,148
+adventure film,male,291
+comedy drama,female,167
+comedy drama,male,251
+comedy film,female,343
+comedy film,male,545
+crime film,female,146
+crime film,male,365
+documentary film,female,62
+documentary film,male,161
+drama film,female,693
+drama film,male,1289
+horror film,female,191
+horror film,male,222
+mystery film,female,124
+mystery film,male,204
+romance film,female,159
+romance film,male,174
+thriller film,female,289
+thriller film,male,497
