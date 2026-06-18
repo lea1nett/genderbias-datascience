@@ -15,8 +15,8 @@ GENRE_MAPPING = {
 }
 
 COLORS = {
-    "female": "#FF69B4",
-    "male": "#4169E1"
+    "female": "#228B22",
+    "male": "#800080"
 }
 
 CHART_SETTINGS = {
