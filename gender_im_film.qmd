@@ -36,12 +36,12 @@ vs. Schauspieler auftreten – und wenn ja, wie?
 *[Hier: Kurze Erklärung was WikiData ist, wie SPARQL funktioniert, und welche Limitierungen
 die Quelle hat (z.B. unvollständige Einträge, kein vollständiges Abbild der Branche).]*
 
-## SPARQL-Abfrage
+## SPARQL-Abfrage(1)
 
 Die Daten wurden über den WikiData Query Service (`query.wikidata.org`) erhoben.
 Die Abfrage gibt für jede Kombination aus Geschlecht und Genre die Anzahl
 der distinct Schauspieler*innen zurück, die 2020 in einer US-Produktion dieses Genres
-mitgewirkt haben.
+mitgewirkt haben. Die Abfrage ist in drei Schritte unterteilt: Zunächst werden Personen vorgefiltert, die mindestens in einem US-Film des Jahres 2020 mitgewirkt haben. Dieser Schritt reduziert die Datenmenge erheblich und verhindert einen Timeout auf dem WikiData Query Service. Anschließend werden für diese gefilterten Personen die Genres der Filme und das Geschlecht abgefragt. Schließlich wird die Genrevielfalt auf 10 etablierte Hauptkategorien beschränkt, um eine sinnvolle Aggregationsebene zu schaffen und die Abfragelast weiter zu reduzieren. Die Abfrage gibt somit eine übersichtliche Zusammenfassung der Genreverteilung von Schauspieler*innen nach Geschlecht für das Jahr 2020 zurück. Für die übrigen Jahre wurden die Zahlen ausgetasucht.
 
 ```{python}
 #| cache: true
@@ -129,6 +129,35 @@ df_raw = pd.DataFrame([{
 
 df_raw
 ```
+
+## SPARQL-Abfrage(2)
+Diese Abfrage ist eine vereinfachte Version der ersten, die nur die Gesamtanzahl aller Schauspieler*innen für ein Jahr ausgiebt. 
+```{python}
+#| cache: true
+#| label: sparql-query
+
+query = """
+SELECT ?genderLabel (COUNT(DISTINCT ?person) AS ?actorCount)
+WHERE {
+  # 1. Filme aus den USA aus einem spezifischen Jahr
+  ?film wdt:P31 wd:Q11424 ;        # ist ein Film
+        wdt:P495 wd:Q30 ;          # Produktionsland: USA
+        wdt:P577 ?date .           # Erscheinungsdatum
+  FILTER(YEAR(?date) = 2025)       # HIER DAS JAHR ÄNDERN (2016 bis 2025)
+
+  # 2. Besetzung des Films abrufen
+  ?film wdt:P161 ?person .
+
+  # 3. Geschlecht abfragen und auf m/w filtern
+  ?person wdt:P21 ?gender .
+  FILTER(?gender IN (wd:Q6581072, wd:Q6581097))
+
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "en" .
+  }
+}
+GROUP BY ?genderLabel
+"""
 
 # Methodik & Stichprobe
 
