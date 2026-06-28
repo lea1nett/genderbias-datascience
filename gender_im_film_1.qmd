@@ -1,5 +1,4 @@
 ---
-quarto render gender_im_film.qmd --to pdf---
 title: "Geschlecht und Genre: Eine WikiData-Analyse zur Repräsentation von Schauspieler*innen in US-Filmproduktionen (2016–2025)"
 author: "Vorname Nachname"
 date: today
@@ -131,7 +130,7 @@ LIMIT 20
 Auf Basis dieser Häufigkeiten wurden die sieben relevantesten Kategorien identifiziert (mit geschätzten Filmzahlen ab 2016):
 
 | Genre-Gruppe     | Enthaltene WikiData-Genres                   | ca. Filme |
-|------------------|-------------------------------------|------------------|
+|------------------|------------------------------------|------------------|
 | Drama            | drama film, biographical film, comedy drama  | \~22.300  |
 | Documentary      | documentary film                             | \~12.200  |
 | Action           | action film, adventure film, sci-fi, fantasy | \~8.700   |
