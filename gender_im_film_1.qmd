@@ -1,8 +1,9 @@
 ---
 title: "Geschlecht und Genre: Eine WikiData-Analyse zur Repräsentation von Schauspieler*innen in US-Filmproduktionen (2016–2025)"
-author: "Vorname Nachname"
+author: "Janis Müller, Veronika Ni, Lea Nettersheim  "
 date: today
 format:
+
   html:
     toc: true
     toc-depth: 3
@@ -22,6 +23,8 @@ format:
       text: |
         \usepackage{setspace}
         \onehalfspacing
+execute: 
+  echo: false
 lang: de
 bibliography: references.bib
 ---
@@ -47,9 +50,11 @@ OUTPUT_CHARTS = OUTPUT_DIR / "charts"
 
 ## Motivation
 
-Wer im Kino sitzt und auf die Leinwand schaut, sieht nicht die Welt, sondern eine kuratierte Version davon. Seit Beginn der Filmgeschichte bestimmen strukturelle Ungleichheiten, welche Geschichten erzählt werden, wer sie erzählt und wer darin sichtbar ist. Studien zeigen konsistent, dass Frauen im Film sowohl quantitativ als auch qualitativ unterrepräsentiert sind: Sie erhalten weniger Rollen, sprechen weniger Dialogzeilen und werden häufiger auf bestimmte Genres beschränkt [@smith2019].
+Wer im Kino sitzt und auf die Leinwand schaut, sieht nicht die Welt, sondern eine kuratierte Version davon. Seit Beginn der Filmgeschichte bestimmen strukturelle Ungleichheiten, welche Geschichten erzählt werden, wer sie erzählt und wer darin sichtbar ist. Sie spiegeln gesellschaftliche Normen und Machtverhältnisse wieder und verstärken diese gleichzeitig. Wer auf der Leinwand sichtbar ist, welche Rollen Frauen und Männer einnehmen und in welchen Genres sie auftreten, sendet implizite Botschaften darüber, wessen Geschichten erzählenswert sind. Studien zeigen konsistent, dass Frauen im Film sowohl quantitativ als auch qualitativ unterrepräsentiert sind: Sie erhalten weniger Rollen, sprechen weniger Dialogzeilen und werden häufiger auf bestimmte Genres beschränkt [@smith2019].
 
-Diese Ungleichheit ist kein Zufall. Sie ist das Ergebnis historisch gewachsener Machtstrukturen, die bestimmen, wessen Perspektive als „normal" gilt, und wessen nicht. Caroline Criado Perez beschreibt dies als den Gender Data Gap: die systematische Lücke, die entsteht, wenn Frauen in Daten, Studien und gesellschaftlichen Normen unsichtbar bleiben [@criadoperez2019].
+Diese Ungleichheit ist kein Zufall und kein bloßes Abbild von Publikumspräferenzen. Sie ist das Ergebnis historisch gewachsener Machtstrukturen, die bestimmen, wessen Perspektive als „normal" gilt, und wessen nicht, Eingebettet in diesenstrukturellen Machtverhältnissen wird bestimmt, welche Genres als prestige- oder budgetträchtig gelten, wer Castingentscheidungen trifft und welche Karrieren als dokumentationswürdig angesehen werden. Gerade letzteres ist für diese Analyse besonders relevant: WikiData als Datenquelle ist kein neutrales Archiv, sondern ein kollaborativ erstelltes Abbild davon, wessen Existenz und Karriere als relevant genug erachtet wird, um dokumentiert zu werden.
+
+Die vorliegende Analyse untersucht diese Ungleichheit datengestützt auf Basis von WikiData – und reflektiert dabei, inwiefern die Datenquelle selbst Teil des Problems sein könnte.
 
 ## Fragestellung
 
@@ -57,45 +62,38 @@ Diese Analyse untersucht, ob und wie stark sich die Genreverteilung von Schauspi
 
 **Leitfrage:** Sind Schauspielerinnen in US-Filmproduktionen systematisch in bestimmten Genres unterrepräsentiert?
 
+Der Fokus liegt dabei bewusst auf Schauspieler\*innen, nicht auf Filmen: Statt zu fragen, welche Genres wie viele Filme mit weiblichen Hauptrollen produzieren, wird untersucht, in welchen Genres Schauspielerinnen und Schauspieler tatsächlich auftreten. Dieser Ansatz erlaubt einen direkteren Blick auf die Beschäftigungsrealität von Personen in der Filmindustrie.
+
+Die Stichprobe ist wie folgt eingegrenzt:
+
+- **Produktionsland:** Ausschließlich US-amerikanische Produktionen (WikiData Property P495 = USA). Die Einschränkung auf das Produktionsland – nicht die Nationalität der Schauspieler\*innen – wurde gewählt, weil für eine Genreanalyse der strukturelle Produktionskontext entscheidend ist. Eine deutsche Schauspielerin in einem Hollywood-Film unterliegt denselben Casting- und Genrestrukturen wie ihre amerikanischen Kolleg\*innen.
+- **Zeitraum:** 2016 bis 2025, um aktuelle Entwicklungen abzubilden und einen Zeitverlauf analysieren zu können.
+- **Mindestfilmanzahl:** Nur Personen mit mehr als vier Filmkredits im jeweiligen Jahr werden berücksichtigt. Personen mit sehr wenigen Kredits erzeugen statistisches Rauschen und sind in WikiData häufig unvollständig dokumentiert.
+- **Genres:** Beschränkung auf sieben übergeordnete Hauptkategorien (Drama, Comedy, Action, Thriller & Crime, Horror, Romance, Documentary), die aus einer Voranalyse der häufigsten WikiData-Genres abgeleitet wurden.
+
 ## Theoretischer Hintergrund
 
-Caroline Criado Perez prägt den Begriff des **Gender Data Gap** für das Phänomen, dass Frauen in Datenerhebungen systematisch untererfasst werden [@criadoperez2019]. Der Gap äußert sich auf vier Ebenen:
+**Gender Data Gap und männlicher Prototyp**
 
-- **Fehlende Daten:** Frauen werden in Studien und Statistiken seltener erfasst, was zu verzerrten Stichproben führt.
-- **Fehlende Variablen:** Geschlechtsspezifische Unterschiede werden bei Datenerhebungen nicht berücksichtigt.
-- **Fehlende Datensätze:** Ganze Lebensbereiche von Frauen – z.B. unbezahlte Care-Arbeit – werden nicht erhoben.
-- **Nicht differenzierte Daten:** Daten werden erhoben, aber nicht nach Geschlecht getrennt ausgewertet, wodurch Unterschiede unsichtbar bleiben.
+Als konzeptuellen Hintergrund sind zwei Begriffe kurz zu nennen. Caroline Criado Perez beschreibt den Gender Data Gap als die systematische Lücke, die entsteht, wenn Frauen in Datenerhebungen untererfasst werden [@criadoperez2019] – ein Phänomen, das sich, wie wir zeigen werden, auch in WikiData selbst beobachten lässt. Eng damit verbunden ist das Konzept des männlichen Prototyps: Die Tendenz, den Mann als gesellschaftliche Norm zu setzen und Abweichungen davon als erklärungsbedürftig zu behandeln [@connell1995]. Im Film zeigt sich das in der Annahme, dass Action- oder Kriegsfilme „natürlich" männlich dominiert sind – eine Erwartung, die sich selbst erfüllt, weil sie Castingentscheidungen prägt.
 
-Übertragen auf WikiData bedeutet dies: Wenn Schauspielerinnen weniger oder unvollständigere Einträge haben als ihre männlichen Kollegen, ist das nicht nur eine technische Lücke – es ist ein strukturelles Problem, das reale Ungleichheiten reproduziert und verstärkt.
+**Matrix of Domination – wo unser Bias wirkt**
 
-**Der männliche Prototyp und Medien**
+Für die Interpretation unserer Ergebnisse ist Patricia Hill Collins' Matrix of Domination das zentrale Analyserahmen [@collins1990]. Collins beschreibt, wie Unterdrückung und Ungleichheit gleichzeitig auf vier Ebenen wirken:
 
-Der Soziologe Raewyn Connell beschreibt, wie **hegemoniale Männlichkeit** zur unhinterfragten gesellschaftlichen Norm wird [@connell1995]. Historische Machtstrukturen – von Bildung über Politik bis Wissenschaft, traditionell von Männern dominiert – haben dazu geführt, dass die männliche Perspektive als universell gilt. Kultur und Medien spielen dabei eine zentrale Rolle: Mythen, Religionen und Unterhaltungsmedien stellen überwiegend männliche Figuren ins Zentrum. Das Männliche wird zur **unausgesprochenen Norm** – nicht weil es repräsentativer wäre, sondern weil hauptsächlich eine Perspektive dokumentiert und institutionalisiert wurde.
+Die Structural Domain umfasst Unterdrückung durch Gesetze und institutionelle Politiken. In der Filmindustrie bedeutet das: Fehlende gesetzliche Quotenregelungen für Besetzungsentscheidungen, keine verbindlichen Diversitätsvorgaben bei der Filmförderung. Strukturell ist es damit schlicht erlaubt, Genres systematisch männlich zu besetzen.
 
-Im Film zeigt sich das konkret: Actionheld*innen, Protagonist*innen in Thrillern und Kriegsfilmen sind historisch männlich konnotiert, während Frauen in „emotionalen" Genres wie Romance oder Drama überrepräsentiert sind.
+Die Disciplinary Domain beschreibt die Verwaltung und Umsetzung von Unterdrückung durch Institutionen und Bürokratien. Hier wirken Casting-Agenturen, Studiopolitiken und Produktionsfirmen: Wenn die Entscheidungsträger\*innen im Casting und in der Produktion überwiegend männlich sind, reproduzieren sich bestehende Muster – nicht durch explizite Diskriminierung, sondern durch institutionalisierte Praxis.
 
-### Data Feminism
+Die Hegemonic Domain ist für unsere Analyse besonders zentral. Sie beschreibt, wie Ungleichheit durch Kultur, Ideologie und Medien legitimiert und unsichtbar gemacht wird. Genres sind keine neutralen Kategorien – sie sind kulturell codiert. Action gilt als „männliches" Genre, Romance als „weibliches". Diese Codierung erscheint so selbstverständlich, dass die Unterrepräsentation von Frauen in Action-Filmen nicht als Ausschluss wahrgenommen wird, sondern als natürliches Ergebnis von Präferenzen und Eignung. WikiData reproduziert diese hegemoniale Logik, indem es die bestehende Verteilung dokumentiert, ohne sie zu hinterfragen.
 
-D'Ignazio und Klein entwickeln in **Data Feminism** (2020) ein Rahmenwerk, das Datenanalyse als politische Praxis begreift [@dignazio2020]. Ihre Kernbotschaft: *Daten(-analysen) sind nicht neutral, sondern spiegeln Machtstrukturen wider und sollten bewusst inklusiv und gerecht gestaltet werden.*
+Die Interpersonal Domain schließlich umfasst alltägliche Diskriminierungs- erfahrungen: Typecasting, informelle Netzwerke, unterschiedliche Gage-Strukturen. Diese Ebene ist mit WikiData-Daten nicht direkt messbar, bildet aber den Erfahrungshintergrund, aus dem die strukturellen Muster entstehen.
 
-Für diese Analyse ist besonders das Prinzip **„Examine Power"** relevant: Wer entscheidet, welche Daten in WikiData eingetragen werden? Wessen Karriere wird dokumentiert, wessen nicht? Die Antworten auf diese Fragen sind nie technisch neutral, sondern eingebettet in gesellschaftliche Machtverhältnisse.
+Zusammen erklären diese vier Ebenen, warum Genreungleichheit so stabil ist: Sie wird nicht nur durch einzelne Entscheidungen produziert, sondern durch ein ineinandergreifendes System aus Strukturen, Institutionen, kulturellen Normen und alltäglichen Praktiken.
 
-### Matrix of Domination
+**Intersektionalität als Grenze dieser Analyse**
 
-Patricia Hill Collins' **Matrix of Domination** beschreibt, wie Unterdrückung auf vier Ebenen gleichzeitig wirkt [@collins1990]:
-
-| Domäne | Beschreibung | Bezug zum Film |
-|------------------------|------------------------|------------------------|
-| Structural | Unterdrückung durch Gesetze und Politiken | Fehlende Quotenregelungen in der Filmindustrie |
-| Disciplinary | Verwaltung von Unterdrückung durch Institutionen | Casting-Strukturen, Studiopolitiken |
-| Hegemonic | Legitimation durch Ideologie, Kultur, Medien | Genres als codierte Rollenerwartungen |
-| Interpersonal | Alltägliche Diskriminierungserfahrungen | Typecasting, ungleiche Gage |
-
-Für unsere Analyse ist besonders die **Hegemonic Domain** relevant: Genres sind keine neutralen Kategorien – sie transportieren kulturelle Erwartungen darüber, welche Geschichten „männlich" oder „weiblich" sind.
-
-### Intersektionalität
-
-Kimberlé Crenshaw betont, dass Diskriminierung selten eindimensional ist [@crenshaw1989]. Geschlecht überlagert sich mit Ethnizität, Klasse, Alter und weiteren Faktoren. Diese Analyse kann Intersektionalität aufgrund der WikiData-Datenlage (Geschlecht ist die einzige systematisch erfasste Kategorie) nicht vollständig abbilden – dies ist eine bewusst reflektierte Limitation und selbst Ausdruck des Gender Data Gap.
+Kimberlé Crenshaw betont, dass Diskriminierung selten eindimensional ist [@crenshaw1989]: Geschlecht überlagert sich mit Ethnizität, Klasse, Alter und weiteren Faktoren. Diese Analyse kann Intersektionalität nicht abbilden, da WikiData außer Geschlecht kaum weitere demografische Eigenschaften systematisch erfasst. Dies ist eine bewusst reflektierte Limitation – und selbst ein Ausdruck des Gender Data Gap.
 
 # Daten und Methode
 
@@ -125,17 +123,17 @@ ORDER BY DESC(?anzahl)
 LIMIT 20
 ```
 
-Auf Basis dieser Häufigkeiten wurden die sieben relevantesten Kategorien identifiziert und in der Analyse zusammengefasst. Die Zuordnung der WikiData-Genres zu den übergeordneten Genre-Gruppen ist in der folgenden Tabelle dargestellt: 
+Auf Basis dieser Häufigkeiten wurden die sieben relevantesten Kategorien identifiziert und in der Analyse zusammengefasst. Die Zuordnung der WikiData-Genres zu den übergeordneten Genre-Gruppen ist in der folgenden Tabelle dargestellt:
 
-| Genre-Gruppe     | Enthaltene WikiData-Genres                   | 
-|-------------------|-----------------------------------|
-| Drama            | drama film, comedy drama                     | 
-| Documentary      | documentary film                             | 
-| Action           | action film, adventure film                  | 
-| Thriller & Crime | thriller film, crime film, mystery film      | 
-| Comedy           | comedy film                                  | 
-| Horror           | horror film                                  | 
-| Romance          | romance film                                 | 
+| Genre-Gruppe     | Enthaltene WikiData-Genres              |
+|------------------|-----------------------------------------|
+| Drama            | drama film, comedy drama                |
+| Documentary      | documentary film                        |
+| Action           | action film, adventure film             |
+| Thriller & Crime | thriller film, crime film, mystery film |
+| Comedy           | comedy film                             |
+| Horror           | horror film                             |
+| Romance          | romance film                            |
 
 ### Hauptabfrage
 
@@ -226,9 +224,7 @@ Folgende Limitierungen sind bei der Interpretation zu berücksichtigen:
 
 ## Gesamtverteilung der Stichprobe
 
-wie in der Einleitung beschrieben, ist die Stichprobe insgesamt stark männlich dominiert. Die absolute Anzahl der Schauspieler\*innen ist über alle Genres hinweg deutlich höher als die der Schauspielerinnen, weswegen im Folgenden die prozentualen Anteile betrachtet werden, um die Unterschiede zwischen den Genres besser sichtbar zu machen.
-
-## Genreverteilung nach Geschlecht
+wie in der Einleitung beschrieben, ist die Stichprobe insgesamt stark männlich dominiert. Konkret beschreibt sie ein Verhältnis von etwa 63% zu 37%. Die absolute Anzahl der Schauspieler ist über alle Genres hinweg deutlich höher als die der Schauspielerinnen, weswegen im Folgenden die prozentualen Anteile betrachtet werden, um die Unterschiede zwischen den Genres besser sichtbar zu machen.
 
 ```{python}
 # label: abb-grundverteilung
@@ -239,11 +235,11 @@ create_bar_chart(df_processed_abs, OUTPUT_CHARTS / "gender_by_genre.png")
 
 ![](output/charts/gender_by_genre.png)
 
-*\[Hier: Welche Genres sind am stärksten von Männern dominiert? In welchen Genres sind Frauen überproportional vertreten? Bezug zu den theoretischen Konzepten: Hegemonic Domain (Collins), männlicher Prototyp.\]*
+Das Balkendiagramm zeigt die prozentuale Gender-Verteilung innerhalb jedes Genres, aggregiert über alle Jahre von 2016 bis 2025. In allen sieben Genres sind Männer in der Mehrheit, jedoch unterscheiden sich die Ausmaße erheblich. Am stärksten männlich dominiert sind Action und Thriller & Crime, mit einem Männeranteil von rund 70–75%. Schauspielerinnen machen hier nur etwa ein Viertel bis knapp ein Drittel der Besetzungen aus. Drama und Comedy liegen nahe am Gesamtdurchschnitt von 37% Frauenanteil und zeigen keine auffälligen Abweichungen. Romance ist das einzige Genre, in dem annähernde Parität erreicht wird, der Frauenanteil liegt hier deutlich über dem Gesamtdurchschnitt. Horror liegt ebenfalls leicht über dem Schnitt. Documentary fällt auf, weil hier der Frauenanteil trotz vergleichsweise kleiner absoluter Zahlen relativ hoch und gleichzeitig am stärksten schwankend ist. Das Muster bestätigt, was feministische Medienforschung bereits dokumentiert hat: Genres sind keine neutralen Kategorien, sondern kulturell codierte Räume mit impliziten Geschlechtererwartungen [@smith2019]. Im Sinne von Collins' Hegemonic Domain erscheint die Unterrepräsentation von Frauen in Action- und Thriller-Filmen nicht als Ausschluss, sondern als vermeintlich natürliches Ergebnis, diese Genres gelten kulturell als „männlich" [@collins1990].
 
 ## Genre-Trends im Zeitverlauf (2016–2025)
 
-*\[Hier: Pro Genre beschreiben wie sich der Frauen-/Männeranteil über die Jahre entwickelt hat. Die gestrichelte Linie zeigt den Gesamt-Trend – weicht ein Genre davon ab? Gibt es Verbesserungen oder Verschlechterungen?\]*
+Die Liniendiagramme zeigen den prozentualen Frauenanteil pro Genre im Jahresverlauf, verglichen mit dem gestrichelten Gesamttrend. Ein zentraler Befund zieht sich durch fast alle Genres: Der Frauenanteil bleibt über zehn Jahre bemerkenswert stabil, trotz gesellschaftlicher Debatten wie #MeToo (ab 2017) oder zunehmender Diversitätsdiskussionen in der Filmindustrie.
 
 ```{python}
 #| label: abb-genre-trends
@@ -269,9 +265,11 @@ num_charts = create_line_charts(
 ![Thriller & Crime](output/charts/gender_trend_thrillercrime.png)
 :::
 
+Der Frauenanteil im Action-Genre liegt konstant zwischen 30–35% und bewegt sich damit durchgehend unterhalb der Gesamtreferenzlinie. Es ist kein erkennbarer Aufwärtstrend sichtbar. Dies ist konsistent mit Befunden der USC Annenberg Inclusion Initiative, die zeigen dass Frauen in actionlastigen Produktionen systematisch seltener besetzt werden [@smith2019]. Comedy zeigt einen der stabilsten Verläufe: Der Frauenanteil schwankt kaum und liegt konstant bei etwa 38–42%, leicht über dem Gesamtdurchschnitt. Das Genre scheint weniger stark von kulturellen Geschlechterkodierungen geprägt zu sein als Action oder Thriller. Documentary ist das volatilste Genre, der Frauenanteil schwankt zwischen unter 25% und über 45%, mit einem auffälligen Ausreißer nach oben um 2022. Dies ist vermutlich auf die kleinen absoluten Zahlen in diesem Genre zurückzuführen: Einzelne große Produktionen mit überwiegend weiblicher Besetzung können den prozentualen Anteil stark verschieben. Die hohe Volatilität deutet darauf hin,dass die Repräsentation von Frauen im Dokumentarfilm weniger strukturell verankert ist, sondern stärker von einzelnen Projekten abhängt. Drama ist das Genre mit den höchsten absoluten Zahlen und zeigt einen stabilen Frauenanteil von rund 36–38%, nahe am Gesamtdurchschnitt. Trotz der kulturellen Assoziation von Drama mit emotionalen, vermeintlich „weiblichen" Themen spiegelt sich das nicht wie eigentlich erwartet in einer überdurchschnittlichen Repräsentation von Schauspielerinnen wider. Horror liegt interessanterweise mit einem Frauenanteil von etwa 43–48% konstant über dem Gesamtdurchschnitt und ist damit nach Romance das frauenfreundlichste Genre der Stichprobe. Eine mögliche Erklärung liegt in der Produktionsstruktur des Genres: Horror-Filme werden häufig mit kleineren Budgets produziert, was die Einstiegshürde für Schauspielerinnen senken könnte [@smith2019]. Zudem sind weibliche Hauptfiguren im Horror-Genre – etwa das Konzept des „Final Girl" – kulturell etabliert [@clover1992]. Romance ist das einzige Genre, in dem der Frauenanteil zeitweise über 50% steigt und die Männer-Referenzlinie unterschreitet. Gleichzeitig zeigt der Verlauf eine gewisse Instabilität: In einigen Jahren fällt der Anteil wieder deutlich ab. Romance ist kulturell stark als „weibliches" Genre kodiert [@connell1995], was erklärt, warum Schauspielerinnen hier überproportional vertreten sind, es ist jedoch gleichzeitig ein Genre, das in der Filmindustrie als weniger prestige-trächtig gilt, was die strukturelle Ambivalenz dieser Repräsentation unterstreicht. Thriller & Crime weist mit rund 30–35% Frauenanteil die stärkste männliche Dominanz neben Action auf und zeigt ebenfalls keinen erkennbaren Aufwärtstrend. Das Genre ist kulturell stark mit Männlichkeit assoziiert: Detektive, Kriminelle und Ermittler sind historisch männlich konnotierte Rollen [@connell1995]. Die Stabilität dieser Unterrepräsentation über zehn Jahre hinweg ist ein deutliches Indiz dafür, dass kurzfristige gesellschaftliche Diskurse allein keine strukturellen Veränderungen bewirken.
+
 ## Absolute Entwicklung
 
-*\[Hier: Wächst die Gesamtzahl der Schauspieler\*innen in der Stichprobe? Wächst sie für beide Geschlechter gleichermaßen?\]*
+Das Liniendiagramm der absoluten Zahlen zeigt einen überraschenden Befund: Die Gesamtzahl der in WikiData erfassten Schauspieler\*innen ist seit 2016 nicht gestiegen, sondern deutlich gesunken – von rund 3.250 Schauspielern und 1.820 Schauspielerinnen im Jahr 2016 auf jeweils etwa 2.030 bzw. 1.300 im Jahr 2025. Der stärkste Einbruch ist in den Jahren 2020–2021 sichtbar und auf die COVID-19-Pandemie zurückzuführen, die Filmproduktionen weltweit zum Erliegen rachte. Bemerkenswert ist, dass der Rückgang bei Schauspielerinnen absolut stärker ausfiel als bei Schauspielern: Während die Männerzahlen nach 2021 wieder auf etwa 2.000 anstiegen, blieb die Frauenzahl dauerhaft unter dem Vor-Pandemie-Niveau. Das prozentuale Verhältnis verschlechterte sich damit in der Pandemie und erholte sich danach nicht vollständig, was zeigt, dass externe Krisen bestehende Ungleichheiten tendenziell verstärken [@criadoperez2019]. Der generelle Rückgang der absoluten Zahlen ab 2016 ist zudem teilweise methodisch bedingt: WikiData-Einträge für neuere Filme und Personen werden häufig mit zeitlichem Verzug angelegt, sodass jüngere Jahre strukturell untererfasst sein könnten.
 
 ```{python}
 #| label: abb-absolut
@@ -284,35 +282,35 @@ create_absolute_line_chart(year_counts, OUTPUT_CHARTS / "absolute_gender_trend.p
 
 # Diskussion
 
-## Interpretation der Ergebnisse
+## Interpretation und Einordnung im Kontext von Gender Bias und Gender Data Gap
 
-*\[Hier die konkreten Befunde aus Kapitel 4 aufgreifen und interpretieren. Beispiele für mögliche Argumente:\]*
+Die Ergebnisse dieser Analyse bestätigen, dass Schauspielerinnen in US-amerikanischen Filmproduktionen systematisch in bestimmten Genres unterrepräsentiert sind und dass diese Ungleichheit über den gesamten Untersuchungszeitraum von 2016 bis 2025 stabil geblieben ist. Ein Verhältnis von 63% zu 37% zugunsten männlicher Schauspieler, das sich in fast allen Genres reproduziert und durch gesellschaftliche Debatten kaum verschoben wurde, ist kein Zufallsbefund. Es ist Ausdruck struktureller Mechanismen, die tiefer reichen als einzelne Castingentscheidungen.
 
-Die Ergebnisse bestätigen, was feministische Medienforschung bereits länger dokumentiert: Genres sind keine neutralen Kategorien, sondern kulturell codierte Räume mit impliziten Geschlechtererwartungen. Im Sinne von Collins' **Hegemonic Domain** legitimieren diese Erwartungen die Ungleichverteilung, ohne dass sie explizit als Diskriminierung erkennbar wäre [@collins1990]. Action- und Kriegsfilme gelten kulturell als „männliche" Genres – dass Schauspielerinnen dort untervertreten sind, erscheint dann nicht als Ausschluss, sondern als natürliches Ergebnis von Präferenzen.
+Collins' Matrix of Domination bietet einen hilfreichen Rahmen, um zu verstehen, warum diese Muster so stabil sind [@collins1990]. Auf der Ebene der Hegemonic Domain erscheint die Dominanz von Männern in Action- und Thriller-Genres nicht als Diskriminierung, sondern als selbstverständlich – weil diese Genres kulturell mit Männlichkeit assoziiert werden. Dass Schauspielerinnen in Romance überproportional vertreten sind, wird spiegelbildlich als natürlich wahrgenommen. Diese kulturelle Kodierung sitzt so tief, dass sie selbst dann wirkt, wenn niemand aktiv diskriminieren will: Produzenten und Casting-Direktoren treffen Entscheidungen auf Basis von Erwartungen darüber, welche Figuren in welchen Genres glaubwürdig sind, und diese Erwartungen sind durch Jahrzehnte an Filmen geformt, in denen genau diese Muster reproduziert wurden. Auf der Ebene der Disciplinary Domain verstärken institutionelle Strukturen diesen Effekt. Wenn die Mehrheit der Entscheidungsträger in Produktionsfirmen und Casting-Agenturen männlich ist, werden bestehende Muster nicht hinterfragt, sondern als Norm behandelt [@smith2019]. Hinzu kommt, dass Genres wie Action und Thriller in der Regel mit höheren Budgets verbunden sind und als prestige- und gewinnträchtiger gelten. Die Unterrepräsentation von Frauen in diesen Genres bedeutet damit auch eine Unterrepräsentation in den finanziell und symbolisch bedeutsamsten Bereichen der Filmindustrie – was direkt mit dem Gender Pay Gap in der Filmbranche zusammenhängt. Schauspielerinnen verdienen im Durchschnitt deutlich weniger als ihre männlichen Kollegen, was unter anderem darauf zurückzuführen ist, dass sie seltener in den Genres und Produktionen besetzt werden, die die höchsten Gagen zahlen [@smith2019]. Der Befund, dass der Frauenanteil in Horror vergleichsweise hoch ist, fügt sich in dieses Bild ein: Horror gilt als weniger prestige-trächtiges Genre mit kleineren Budgets und einer langen Tradition weiblicher Hauptfiguren [@clover1992]. Dass Schauspielerinnen dort leichter Zugang finden, ist damit kein Zeichen von Gleichberechtigung, sondern möglicherweise Ausdruck davon, dass das Genre schlicht weniger umkämpft ist. Gleiches gilt für Romance: Das Genre, in dem Frauen am stärksten vertreten sind, ist gleichzeitig dasjenige, das in der Filmkritik und -industrie am geringsten angesehen wird.
 
-D'Ignazio und Klein würden darauf hinweisen, dass diese scheinbare Natürlichkeit selbst ein Produkt von Machtstrukturen ist [@dignazio2020]: Wenn die Mehrheit derjenigen, die Castingentscheidungen treffen, männlich ist (Disciplinary Domain nach Collins), reproduzieren sich bestehende Muster.
+Besonders aufschlussreich ist der Einbruch während der COVID-19-Pandemie. Die absoluten Zahlen zeigen, dass der Rückgang bei Schauspielerinnen stärker ausfiel als bei Schauspielern und sich danach nicht vollständig erholte. Dies ist konsistent mit dem, was Criado Perez als systemisches Muster beschreibt: In Krisenzeiten werden bestehende Ungleichheiten nicht eingefroren, sondern verschärft [@criadoperez2019]. Wenn Produktionen Kosten sparen müssen, trifft das überproportional jene, die ohnehin in einer schwächeren Verhandlungsposition sind.
 
-## Einordnung im Kontext des Gender Data Gap
-
-Besonders relevant ist, was die Daten **nicht** zeigen können. WikiData selbst ist ein Ausdruck des Gender Data Gap nach Criado Perez [@criadoperez2019]: Einträge entstehen dort, wo Community-Mitglieder Relevanz wahrnehmen – und diese Wahrnehmung ist nicht geschlechtsneutral. Studien zu Wikipedia – der eng mit WikiData verbundenen Plattform – zeigen, dass Frauen deutlich seltener eigene Artikel erhalten und bestehende Artikel kürzer und lückenhafter sind [@wagner2015].
-
-Dies bedeutet: Die Stichprobe dieser Analyse ist bereits gefiltert. Schauspielerinnen, die WikiData nicht erfasst, sind überproportional jene mit kürzeren, weniger dokumentierten Karrieren – genau die Gruppe, deren Unterrepräsentation besonders relevant wäre. Der **Gender Data Gap zeigt sich damit nicht nur im Film, sondern auch in den Daten, mit denen wir ihn untersuchen**.
+Schließlich ist der Gender Data Gap nicht nur ein Befund über die Filmindustrie, sondern auch über die Daten selbst. WikiData ist kein neutrales Archiv, es ist ein Spiegel davon, wessen Karriere als dokumentationswürdig gilt. Studien zu Wikipedia, der eng mit WikiData verbundenen Plattform, zeigen dass Frauen deutlich seltener eigene Artikel erhalten und bestehende Einträge kürzer und lückenhafter sind [@wagner2015]. Das bedeutet: Die Stichprobe dieser Analyse ist bereits gefiltert. Schauspielerinnen, die WikiData nicht erfasst, sind überproportional jene mit kürzeren oder weniger dokumentierten Karrieren, genau die Gruppe, deren Unterrepräsentation am relevantesten wäre. Der Gender Data Gap zeigt sich damit nicht nur im Film, sondern auch in den Daten, mit denen wir ihn untersuchen.
 
 ## Reflexion von Limitationen
 
-Neben den methodischen Einschränkungen aus Kapitel 3.4 sind zwei konzeptuelle Grenzen zu benennen:
+Die vorliegende Analyse ist in mehrfacher Hinsicht eingeschränkt, was bei der Interpretation der Ergebnisse berücksichtigt werden muss.
 
-**Binäre Geschlechtskategorisierung:** Die Analyse arbeitet mit einer binären Klassifikation, die WikiDatas Datenstruktur folgt. Aus intersektionaler Perspektive (Crenshaw) ist dies unzureichend: Nicht-binäre und genderdiverse Schauspieler\*innen bleiben unsichtbar, und die Erfahrungen von Frauen unterschiedlicher Herkunft, Klasse oder sexueller Orientierung werden unter einer einheitlichen Kategorie „weiblich" subsumiert [@crenshaw1989].
+Die wichtigste Einschränkung betrifft die Selektivität von WikiData als Datenquelle. Nur Personen mit Wikipedia-Einträgen sind erfasst, und die Vollständigkeit dieser Einträge variiert erheblich. Weniger bekannte Schauspielerinnen und Schauspieler fehlen systematisch, wobei der Forschungsstand nahelegt, dass dieser Effekt genderspezifisch ist und Frauen überproportional betrifft [@wagner2015]. Die hier gemessenen Anteile sind daher als Untergrenze der tatsächlichen Ungleichheit zu verstehen – die reale Situation dürfte noch stärker zugunsten von Männern verzerrt sein.
 
-**Kausalität vs. Korrelation:** Die Analyse zeigt Muster, kann aber keine Ursachen belegen. Ob Schauspielerinnen weniger Action-Rollen erhalten, weil sie nicht gecastet werden, weil sie nicht auditionieren, oder weil weniger Action-Filme mit weiblichen Hauptrollen produziert werden – das lässt sich mit WikiData allein nicht klären.
+Die Beschränkung auf einen Mindestfilmanzahl von mehr als vier Kredits pro Jahr verbessert zwar die Datenqualität, schließt aber Personen mit diskontinuierlichen oder kürzeren Karrieren aus. Da Schauspielerinnen im Schnitt kürzere Karrieren haben als Schauspieler, könnte auch dieser Filter eine strukturelle Verzerrung zugunsten der gut dokumentierten, stabilen Karrieren – tendenziell männlich – einführen.
 
-## Fazit
+Die binäre Geschlechtskategorisierung ist eine weitere wesentliche Einschränkung. WikiData erfasst Geschlecht überwiegend binär, was bedeutet dass nicht-binäre und genderdiverse Personen in der Analyse vollständig unsichtbar bleiben. Aus intersektionaler Perspektive ist dies besonders problematisch: Crenshaw zeigt, dass Diskriminierung selten eindimensional ist und sich Geschlecht mit Ethnizität, Klasse, Alter und anderen Faktoren überlagert [@crenshaw1989]. Eine Analyse, die nur zwischen männlich und weiblich unterscheidet, kann diese Überlagerungen nicht abbilden und homogenisiert damit sehr unterschiedliche Erfahrungen unter einer einheitlichen Kategorie.
 
-Diese Analyse zeigt, dass Geschlechterunterschiede in der Genreverteilung von Schauspieler\*innen in US-Filmproduktionen auch in WikiData messbar sind. *\[Hier konkrete Hauptbefunde zusammenfassen.\]*
+Schließlich ist zu beachten, dass die Analyse Korrelationen zeigt, aber keine Kausalität belegen kann. Ob Schauspielerinnen weniger Action-Rollen erhalten, weil sie nicht gecastet werden, weil sie für solche Rollen seltener vorsprechen, oder weil weniger Action-Filme mit weiblichen Hauptrollen produziert werden – all das lässt sich mit WikiData-Daten allein nicht klären. Die Daten beschreiben ein Muster, aber nicht den Mechanismus, der es erzeugt.
 
-Aus der Perspektive des Data Feminism ist der vielleicht wichtigste Befund nicht das, was die Daten zeigen – sondern das, was sie nicht zeigen können. WikiData ist kein Spiegel der Filmindustrie, sondern eine kuratierte, von gesellschaftlichen Machtverhältnissen geprägte Repräsentation davon. Eine datenbasierte Analyse von Genderungleichheit trägt damit immer das Risiko, den Gender Data Gap zu reproduzieren, den sie zu untersuchen versucht.
+# Fazit
 
-Für zukünftige Analysen wäre eine Verbindung mit zusätzlichen Quellen – etwa Daten des Geena Davis Institute on Gender in Media oder der USC Annenberg Inclusion Initiative – wünschenswert, um ein vollständigeres Bild zu erhalten.
+Diese Analyse hat gezeigt, dass Schauspielerinnen in US-amerikanischen Filmproduktionen über den gesamten Zeitraum von 2016 bis 2025 systematisch unterrepräsentiert sind, sowohl insgesamt als auch in den finanziell und symbolisch bedeutsamsten Genres wie Action und Thriller. Das Verhältnis von 63% zu 37% zugunsten männlicher Schauspieler blieb über zehn Jahre stabil, was darauf hindeutet, dass kurzfristige gesellschaftliche Diskurse allein keine strukturellen Veränderungen in der Filmindustrie bewirken.
+
+Aus der Perspektive des Data Feminism ist dabei der vielleicht wichtigste Befund nicht das, was die Daten zeigen, sondern das, was sie nicht zeigen können. WikiData ist kein neutrales Abbild der Filmindustrie, sondern eine von gesellschaftlichen Machtverhältnissen geprägte Repräsentation davon. Eine Analyse, die auf solchen Daten basiert, trägt das Risiko, den Gender Data Gap zu reproduzieren, den sie zu untersuchen versucht – und macht damit deutlich, dass Datenqualität und Datengerechtigkeit keine technischen, sondern politische Fragen sind [@dignazio2020].
+
+Für zukünftige Analysen wäre eine Verbindung mit zusätzlichen Quellen wünschenswert, etwa die Daten der USC Annenberg Inclusion Initiative oder des Geena Davis Institute on Gender in Media, um ein vollständigeres Bild der tatsächlichen Beschäftigungsrealität von Schauspielerinnen zu erhalten. Darüber hinaus wäre eine intersektionale Erweiterung der Analyse – etwa durch die Einbeziehung von Ethnizität oder Alter – ein wichtiger nächster Schritt, um die Vielschichtigkeit von Repräsentationsungleichheiten im Film besser abbilden zu können.
 
 # Literaturverzeichnis
 
