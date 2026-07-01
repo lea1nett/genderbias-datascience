@@ -27,7 +27,7 @@ bibliography: references.bib
 ---
 
 ```{python}
-#| include: false
+# label: setup
 from pathlib import Path
 import sys
 
@@ -47,19 +47,17 @@ OUTPUT_CHARTS = OUTPUT_DIR / "charts"
 
 ## Motivation
 
-Wer im Kino sitzt und auf die Leinwand schaut, sieht nicht die Welt – sondern eine kuratierte Version davon. Seit Beginn der Filmgeschichte bestimmen strukturelle Ungleichheiten, welche Geschichten erzählt werden, wer sie erzählt und wer darin sichtbar ist. Studien zeigen konsistent, dass Frauen im Film sowohl quantitativ als auch qualitativ unterrepräsentiert sind: Sie erhalten weniger Rollen, sprechen weniger Dialogzeilen und werden häufiger auf bestimmte Genres beschränkt [@smith2019].
+Wer im Kino sitzt und auf die Leinwand schaut, sieht nicht die Welt, sondern eine kuratierte Version davon. Seit Beginn der Filmgeschichte bestimmen strukturelle Ungleichheiten, welche Geschichten erzählt werden, wer sie erzählt und wer darin sichtbar ist. Studien zeigen konsistent, dass Frauen im Film sowohl quantitativ als auch qualitativ unterrepräsentiert sind: Sie erhalten weniger Rollen, sprechen weniger Dialogzeilen und werden häufiger auf bestimmte Genres beschränkt [@smith2019].
 
-Diese Ungleichheit ist kein Zufall. Sie ist das Ergebnis historisch gewachsener Machtstrukturen, die bestimmen, wessen Perspektive als „normal" gilt – und wessen nicht. Caroline Criado Perez beschreibt dies als den **Gender Data Gap**: die systematische Lücke, die entsteht, wenn Frauen in Daten, Studien und gesellschaftlichen Normen unsichtbar bleiben [@criadoperez2019].
+Diese Ungleichheit ist kein Zufall. Sie ist das Ergebnis historisch gewachsener Machtstrukturen, die bestimmen, wessen Perspektive als „normal" gilt, und wessen nicht. Caroline Criado Perez beschreibt dies als den Gender Data Gap: die systematische Lücke, die entsteht, wenn Frauen in Daten, Studien und gesellschaftlichen Normen unsichtbar bleiben [@criadoperez2019].
 
 ## Fragestellung
 
-Diese Analyse untersucht, ob und wie stark sich die Genreverteilung von Schauspielerinnen und Schauspielern in US-Filmproduktionen unterscheidet – und wie sich dieser Unterschied zwischen 2016 und 2025 entwickelt hat. Dabei wird WikiData sowohl als Datenquelle als auch als Untersuchungsgegenstand betrachtet: Fehlende oder unvollständige Einträge können selbst ein Indiz für strukturellen Bias sein.
+Diese Analyse untersucht, ob und wie stark sich die Genreverteilung von Schauspielerinnen und Schauspielern in US-Filmproduktionen unterscheidet, und wie sich dieser Unterschied zwischen 2016 und 2025 entwickelt hat. Dabei wird WikiData sowohl als Datenquelle als auch als Untersuchungsgegenstand betrachtet: Fehlende oder unvollständige Einträge können selbst ein Indiz für strukturellen Bias sein.
 
-**Leitfrage:** Sind Schauspielerinnen in US-Filmproduktionen systematisch auf bestimmte Genres konzentriert – und spiegelt WikiData diesen Bias wider oder verstärkt es ihn?
+**Leitfrage:** Sind Schauspielerinnen in US-Filmproduktionen systematisch in bestimmten Genres unterrepräsentiert?
 
 ## Theoretischer Hintergrund
-
-### Gender Data Gap
 
 Caroline Criado Perez prägt den Begriff des **Gender Data Gap** für das Phänomen, dass Frauen in Datenerhebungen systematisch untererfasst werden [@criadoperez2019]. Der Gap äußert sich auf vier Ebenen:
 
@@ -70,7 +68,7 @@ Caroline Criado Perez prägt den Begriff des **Gender Data Gap** für das Phäno
 
 Übertragen auf WikiData bedeutet dies: Wenn Schauspielerinnen weniger oder unvollständigere Einträge haben als ihre männlichen Kollegen, ist das nicht nur eine technische Lücke – es ist ein strukturelles Problem, das reale Ungleichheiten reproduziert und verstärkt.
 
-### Der männliche Prototyp und Medien
+**Der männliche Prototyp und Medien**
 
 Der Soziologe Raewyn Connell beschreibt, wie **hegemoniale Männlichkeit** zur unhinterfragten gesellschaftlichen Norm wird [@connell1995]. Historische Machtstrukturen – von Bildung über Politik bis Wissenschaft, traditionell von Männern dominiert – haben dazu geführt, dass die männliche Perspektive als universell gilt. Kultur und Medien spielen dabei eine zentrale Rolle: Mythen, Religionen und Unterhaltungsmedien stellen überwiegend männliche Figuren ins Zentrum. Das Männliche wird zur **unausgesprochenen Norm** – nicht weil es repräsentativer wäre, sondern weil hauptsächlich eine Perspektive dokumentiert und institutionalisiert wurde.
 
@@ -127,17 +125,17 @@ ORDER BY DESC(?anzahl)
 LIMIT 20
 ```
 
-Auf Basis dieser Häufigkeiten wurden die sieben relevantesten Kategorien identifiziert (mit geschätzten Filmzahlen ab 2016):
+Auf Basis dieser Häufigkeiten wurden die sieben relevantesten Kategorien identifiziert und in der Analyse zusammengefasst. Die Zuordnung der WikiData-Genres zu den übergeordneten Genre-Gruppen ist in der folgenden Tabelle dargestellt: 
 
-| Genre-Gruppe     | Enthaltene WikiData-Genres                   | ca. Filme |
-|------------------|------------------------------------|------------------|
-| Drama            | drama film, biographical film, comedy drama  | \~22.300  |
-| Documentary      | documentary film                             | \~12.200  |
-| Action           | action film, adventure film, sci-fi, fantasy | \~8.700   |
-| Thriller & Crime | thriller film, crime film, mystery film      | \~7.700   |
-| Comedy           | comedy film                                  | \~7.800   |
-| Horror           | horror film                                  | \~3.200   |
-| Romance          | romance film, romantic comedy film           | \~2.900   |
+| Genre-Gruppe     | Enthaltene WikiData-Genres                   | 
+|-------------------|-----------------------------------|
+| Drama            | drama film, comedy drama                     | 
+| Documentary      | documentary film                             | 
+| Action           | action film, adventure film                  | 
+| Thriller & Crime | thriller film, crime film, mystery film      | 
+| Comedy           | comedy film                                  | 
+| Horror           | horror film                                  | 
+| Romance          | romance film                                 | 
 
 ### Hauptabfrage
 
@@ -197,12 +195,12 @@ Zusätzlich wurde pro Jahr eine aggregierte Abfrage ohne Genre-Aufschlüsselung 
 
 Die Rohdaten liegen als CSV-Dateien vor: `data_raw_1/` enthält pro Jahr die genrebezogenen Daten, `data_raw_2/` die aggregierten Gesamtzahlen. Die Aufbereitung erfolgt modular über `process.py`:
 
-- **Genre-Mapping:** Verwandte Einzelgenres werden zu sieben übergeordneten Kategorien zusammengefasst (konfiguriert in `config.py`).
+- **Genre-Mapping:** Verwandte Einzelgenres werden wie oben gezeigt zu sieben übergeordneten Kategorien zusammengefasst (konfiguriert in `config.py`).
 - **Aggregation:** Absolute Schauspieler\*innen-Zahlen pro Jahr, Genre und Geschlecht sowie normalisierte prozentuale Anteile.
 - **Referenztrend:** Gesamtanteil männlich/weiblich pro Jahr aus `data_raw_2/`, als Vergleichslinie in den Genre-Zeitreihen.
 
 ```{python}
-#| label: datenaufbereitung
+# label: datenaufbereitung
 
 df_processed_pct, df_processed_abs, year_counts, overall_share_df = \
     load_and_process_data(DATA_RAW_2, DATA_RAW_1)
@@ -213,31 +211,33 @@ summary.columns = ["Geschlecht", "Gesamtanzahl (alle Jahre, alle Genres)"]
 summary
 ```
 
+Wie man sehen kann, ist die Stichprobe mit 31.745 Schauspielern und 18.827 Schauspielerinnen insgesamt stark männlich dominiert. Die absolute Anzahl der Schauspieler\*innen ist über alle Genres hinweg deutlich höher als die der Schauspielerinnen, weswegen im Folgenden die prozentualen Anteile betrachtet werden, um die Unterschiede zwischen den Genres besser sichtbar zu machen.
+
 ## Methodische Einschränkungen
 
 Folgende Limitierungen sind bei der Interpretation zu berücksichtigen:
 
-- **Selektivität von WikiData:** Nur Personen mit Wikipedia-Einträgen sind erfasst. Weniger bekannte Schauspieler\*innen – und der Forschungsstand legt nahe, dass das überproportional Frauen betrifft – fehlen systematisch.
+- **Selektivität von WikiData:** Nur Personen mit Wikipedia-Einträgen sind erfasst. Weniger bekannte Schauspieler\*innen – und der Forschungsstand legt nahe, dass das überproportional Frauen betrifft – fehlen systematisch, was sich auf den Gender Data Gap zurückführen lässt (vgl. @criadoperez2019).
 - **Binäre Geschlechtskategorisierung:** WikiData erfasst Geschlecht binär (männlich/weiblich). Nicht-binäre Personen sind kaum repräsentiert, was die Analyse auf diese zwei Kategorien beschränkt.
 - **Mindestfilmanzahl:** Der Filter auf mehr als 4 Filmkredits erhöht die Datenqualität, schließt aber Personen mit kürzeren oder diskontinuierlichen Karrieren aus – auch das kann genderspezifisch sein.
-- **Intersektionalität:** Weitere Dimensionen wie Ethnizität oder Alter konnten aufgrund fehlender Daten nicht berücksichtigt werden (vgl. @crenshaw1989).
+- **Intersektionalität:** Weitere Dimensionen wie Ethnizität oder Alter, die sich in der Realität stark auf die Geschlechterverteilung auswirken, wurden des Umfangs wegen in dieser Analyse nicht berücksichtigt (vgl. @crenshaw1989).
 
 # Ergebnisse
 
 ## Gesamtverteilung der Stichprobe
 
-*\[Nach dem Ausführen des Codes: Kurze Beschreibung wie viele Schauspielerinnen vs. Schauspieler insgesamt in der Stichprobe sind und was das Verhältnis bedeutet.\]*
+wie in der Einleitung beschrieben, ist die Stichprobe insgesamt stark männlich dominiert. Die absolute Anzahl der Schauspieler\*innen ist über alle Genres hinweg deutlich höher als die der Schauspielerinnen, weswegen im Folgenden die prozentualen Anteile betrachtet werden, um die Unterschiede zwischen den Genres besser sichtbar zu machen.
+
+## Genreverteilung nach Geschlecht
 
 ```{python}
-#| label: abb-grundverteilung
-#| fig-cap: "Abbildung 1: Gender-Verteilung pro Filmgenre über alle Jahre (2016–2025, in %)"
+# label: abb-grundverteilung
+# fig-cap: "Abbildung 1: Gender-Verteilung pro Filmgenre über alle Jahre (2016–2025, in %)"
 
 create_bar_chart(df_processed_abs, OUTPUT_CHARTS / "gender_by_genre.png")
 ```
 
 ![](output/charts/gender_by_genre.png)
-
-## Genreverteilung nach Geschlecht
 
 *\[Hier: Welche Genres sind am stärksten von Männern dominiert? In welchen Genres sind Frauen überproportional vertreten? Bezug zu den theoretischen Konzepten: Hegemonic Domain (Collins), männlicher Prototyp.\]*
 
