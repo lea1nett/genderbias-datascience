@@ -1,6 +1,6 @@
 ---
 title: "Geschlecht und Genre: Eine WikiData-Analyse zur Repräsentation von Schauspieler*innen in US-Filmproduktionen (2016–2025)"
-author: "Janis Müller, Veronika Ni, Lea Nettersheim"
+author: "Janis Müller, Veronika Ni, Lea Nettersheim  "
 date: today
 format:
 
@@ -52,15 +52,14 @@ OUTPUT_CHARTS = OUTPUT_DIR / "charts"
 
 Wer im Kino sitzt und auf die Leinwand schaut, sieht nicht die Welt, sondern eine kuratierte Version davon. Seit Beginn der Filmgeschichte bestimmen strukturelle Ungleichheiten, welche Geschichten erzählt werden, wer sie erzählt und wer darin sichtbar ist. Sie spiegeln gesellschaftliche Normen und Machtverhältnisse wieder und verstärken diese gleichzeitig. Wer auf der Leinwand sichtbar ist, welche Rollen Frauen und Männer einnehmen und in welchen Genres sie auftreten, sendet implizite Botschaften darüber, wessen Geschichten erzählenswert sind. Studien zeigen konsistent, dass Frauen im Film sowohl quantitativ als auch qualitativ unterrepräsentiert sind: Sie erhalten weniger Rollen, sprechen weniger Dialogzeilen und werden häufiger auf bestimmte Genres beschränkt [@smith2019].
 
-Diese Ungleichheit ist kein Zufall und kein bloßes Abbild von Publikumspräferenzen. Sie ist das Ergebnis historisch gewachsener Machtstrukturen, die bestimmen, wessen Perspektive als „normal" gilt, und wessen nicht, Eingebettet in diesenstrukturellen Machtverhältnissen wird bestimmt, welche Genres als prestige- oder budgetträchtig gelten, wer Castingentscheidungen trifft und welche Karrieren als dokumentationswürdig angesehen werden. Gerade letzteres ist für diese Analyse besonders relevant: WikiData als Datenquelle ist kein neutrales Archiv, sondern ein kollaborativ erstelltes Abbild davon, wessen Existenz und Karriere als relevant genug erachtet wird, um dokumentiert zu werden.
-
+Diese Ungleichheit ist kein Zufall und kein bloßes Abbild von Publikumspräferenzen. Sie ist das Ergebnis historisch gewachsener Machtstrukturen, die bestimmen, wessen Perspektive als „normal" gilt, und wessen nicht, eingebettet in diesen strukturellen Machtverhältnissen wird bestimmt, welche Genres als prestige- oder budgetträchtig gelten, wer Castingentscheidungen trifft und welche Karrieren als dokumentationswürdig angesehen werden. Gerade letzteres ist für diese Analyse besonders relevant: WikiData ist eine freie, kollaborative Wissensdatenbank, die strukturierte Daten in Form von *Items* (Q-IDs) und *Properties* (P-IDs) bereitstellt, welche sich über SPARQL abfragen lassen [@vrandecic2014]. Als Datenquelle bietet sie freie Verfügbarkeit, maschinenlesbare Struktur und eine breite Abdeckung von Filmproduktionen und Personen. WikiData als Datenquelle ist jedoch kein neutrales Archiv, sondern ein kollaborativ erstelltes Abbild davon, wessen Existenz und Karriere als relevant genug erachtet wird, um dokumentiert zu werden.
 Die vorliegende Analyse untersucht diese Ungleichheit datengestützt auf Basis von WikiData – und reflektiert dabei, inwiefern die Datenquelle selbst Teil des Problems sein könnte.
 
 ## Fragestellung
 
-Diese Analyse untersucht, ob und wie stark sich die Genreverteilung von Schauspielerinnen und Schauspielern in US-Filmproduktionen unterscheidet, und wie sich dieser Unterschied zwischen 2016 und 2025 entwickelt hat. Dabei wird WikiData sowohl als Datenquelle als auch als Untersuchungsgegenstand betrachtet: Fehlende oder unvollständige Einträge können selbst ein Indiz für strukturellen Bias sein.
+In dieser Analyse wird untersucht, ob und wie stark sich die Geschlechterverteilung von Schauspielerinnen und Schauspielern in ausgewählten Genres von US-Filmproduktionen unterscheidet und wie sich dieser Unterschied zwischen 2016 und 2025 entwickelt hat. Dabei wird WikiData sowohl als Datenquelle als auch als Untersuchungsgegenstand betrachtet: Fehlende oder unvollständige Einträge können selbst ein Indiz für strukturellen Bias sein.
 
-**Leitfrage:** Sind Schauspielerinnen in US-Filmproduktionen systematisch in bestimmten Genres unterrepräsentiert?
+**Forschungsfrage:** Sind Schauspielerinnen in US-Filmproduktionen systematisch in ausgewählten Genres unterrepräsentiert?
 
 Der Fokus liegt dabei bewusst auf Schauspieler\*innen, nicht auf Filmen: Statt zu fragen, welche Genres wie viele Filme mit weiblichen Hauptrollen produzieren, wird untersucht, in welchen Genres Schauspielerinnen und Schauspieler tatsächlich auftreten. Dieser Ansatz erlaubt einen direkteren Blick auf die Beschäftigungsrealität von Personen in der Filmindustrie.
 
@@ -68,18 +67,18 @@ Die Stichprobe ist wie folgt eingegrenzt:
 
 - **Produktionsland:** Ausschließlich US-amerikanische Produktionen (WikiData Property P495 = USA). Die Einschränkung auf das Produktionsland – nicht die Nationalität der Schauspieler\*innen – wurde gewählt, weil für eine Genreanalyse der strukturelle Produktionskontext entscheidend ist. Eine deutsche Schauspielerin in einem Hollywood-Film unterliegt denselben Casting- und Genrestrukturen wie ihre amerikanischen Kolleg\*innen.
 - **Zeitraum:** 2016 bis 2025, um aktuelle Entwicklungen abzubilden und einen Zeitverlauf analysieren zu können.
-- **Mindestfilmanzahl:** Nur Personen mit mehr als vier Filmkredits im jeweiligen Jahr werden berücksichtigt. Personen mit sehr wenigen Kredits erzeugen statistisches Rauschen und sind in WikiData häufig unvollständig dokumentiert.
+- **Mindestfilmanzahl:** Nur Personen die in mehr als vier Filmen mitgespielt haben, im jeweiligen Jahr, werden berücksichtigt. Personen mit sehr wenigen Erscheinungen erzeugen statistisches Rauschen und sind in WikiData häufig unvollständig dokumentiert.
 - **Genres:** Beschränkung auf sieben übergeordnete Hauptkategorien (Drama, Comedy, Action, Thriller & Crime, Horror, Romance, Documentary), die aus einer Voranalyse der häufigsten WikiData-Genres abgeleitet wurden.
 
 ## Theoretischer Hintergrund
 
 **Gender Data Gap und männlicher Prototyp**
 
-Als konzeptuellen Hintergrund sind zwei Begriffe kurz zu nennen. Caroline Criado Perez beschreibt den Gender Data Gap als die systematische Lücke, die entsteht, wenn Frauen in Datenerhebungen untererfasst werden [@criadoperez2019] – ein Phänomen, das sich, wie wir zeigen werden, auch in WikiData selbst beobachten lässt. Eng damit verbunden ist das Konzept des männlichen Prototyps: Die Tendenz, den Mann als gesellschaftliche Norm zu setzen und Abweichungen davon als erklärungsbedürftig zu behandeln [@connell1995]. Im Film zeigt sich das in der Annahme, dass Action- oder Kriegsfilme „natürlich" männlich dominiert sind – eine Erwartung, die sich selbst erfüllt, weil sie Castingentscheidungen prägt.
+Als konzeptuellen Hintergrund sind zwei Begriffe kurz zu nennen. Caroline Criado Perez beschreibt den Gender Data Gap als die systematische Lücke, die entsteht, wenn Frauen in Datenerhebungen untererfasst werden [@criadoperez2019]. Dies ist ein Phänomen, das sich, wie wir zeigen werden, auch in WikiData selbst beobachten lässt. Eng damit verbunden ist das Konzept des männlichen Prototyps: Die Tendenz, den Mann als gesellschaftliche Norm zu setzen und Abweichungen davon als erklärungsbedürftig zu behandeln [@connell1995]. Bei Filmen zeigt sich das in der Annahme, dass Action- oder Kriegsfilme „natürlich" männlich dominiert sind - eine Erwartung, die sich selbst erfüllt, weil sie Castingentscheidungen prägt.
 
 **Matrix of Domination – wo unser Bias wirkt**
 
-Für die Interpretation unserer Ergebnisse ist Patricia Hill Collins' Matrix of Domination das zentrale Analyserahmen [@collins1990]. Collins beschreibt, wie Unterdrückung und Ungleichheit gleichzeitig auf vier Ebenen wirken:
+Für die Interpretation unserer Ergebnisse ist Patricia Hill Collins' Matrix of Domination der zentrale Analyserahmen [@collins1990]. Collins beschreibt, wie Unterdrückung und Ungleichheit gleichzeitig auf vier Ebenen wirken:
 
 Die Structural Domain umfasst Unterdrückung durch Gesetze und institutionelle Politiken. In der Filmindustrie bedeutet das: Fehlende gesetzliche Quotenregelungen für Besetzungsentscheidungen, keine verbindlichen Diversitätsvorgaben bei der Filmförderung. Strukturell ist es damit schlicht erlaubt, Genres systematisch männlich zu besetzen.
 
@@ -95,13 +94,6 @@ Zusammen erklären diese vier Ebenen, warum Genreungleichheit so stabil ist: Sie
 
 Kimberlé Crenshaw betont, dass Diskriminierung selten eindimensional ist [@crenshaw1989]: Geschlecht überlagert sich mit Ethnizität, Klasse, Alter und weiteren Faktoren. Diese Analyse kann Intersektionalität nicht abbilden, da WikiData außer Geschlecht kaum weitere demografische Eigenschaften systematisch erfasst. Dies ist eine bewusst reflektierte Limitation – und selbst ein Ausdruck des Gender Data Gap.
 
-# Daten und Methode
-
-## Datenquelle: WikiData
-
-WikiData ist eine freie, kollaborative Wissensdatenbank, die strukturierte Daten für Wikipedia und andere Projekte der Wikimedia Foundation bereitstellt. Inhalte werden als sogenannte *Items* (Entitäten mit eindeutiger Q-ID) und *Properties* (Eigenschaften mit P-ID) organisiert und können über die Abfragesprache SPARQL ausgewertet werden [@vrandecic2014].
-
-Als Datenquelle für diese Analyse bietet WikiData mehrere Vorteile: freie Verfügbarkeit, maschinenlesbare Struktur und eine große Abdeckung von Filmproduktionen und Personen. Gleichzeitig ist WikiData kein vollständiges Abbild der Filmindustrie – die Qualität der Einträge hängt von der Community ab, die sie pflegt, und ist damit selbst ein Ausdruck der oben beschriebenen Machtstrukturen.
 
 ## Stichprobe
 
@@ -137,103 +129,57 @@ Auf Basis dieser Häufigkeiten wurden die sieben relevantesten Kategorien identi
 
 ### Hauptabfrage
 
-Für jedes Jahr von 2016 bis 2025 wurde folgende SPARQL-Abfrage einzeln ausgeführt und als CSV exportiert (Jahreszahl entsprechend angepasst): Die Daten wurden über den WikiData Query Service (`query.wikidata.org`) erhoben. Die Abfrage gibt für jede Kombination aus Geschlecht und Genre die Anzahl der distinct Schauspieler\*innen zurück, die 2020 in einer US-Produktion dieses Genres mitgewirkt haben. Die Abfrage ist in drei Schritte unterteilt: Zunächst werden Personen vorgefiltert, die mindestens in einem US-Film des Jahres 2020 mitgewirkt haben. Dieser Schritt reduziert die Datenmenge erheblich und verhindert einen Timeout auf dem WikiData Query Service. Anschließend werden für diese gefilterten Personen die Genres der Filme und das Geschlecht abgefragt. Schließlich wird die Genrevielfalt auf 10 etablierte Hauptkategorien beschränkt, um eine sinnvolle Aggregationsebene zu schaffen und die Abfragelast weiter zu reduzieren. Die Abfrage gibt somit eine übersichtliche Zusammenfassung der Genreverteilung von Schauspieler\*innen nach Geschlecht für das Jahr 2020 zurück. Für die übrigen Jahre wurden die Zahlen ausgetauscht.
+Für jedes Jahr von 2016 bis 2025 wurde folgende SPARQL-Abfrage einzeln ausgeführt und als CSV exportiert (Jahreszahl entsprechend angepasst):
 
 ``` sparql
-SELECT ?genderLabel ?genreLabel
-       (COUNT(DISTINCT ?person) AS ?actorCount)
+SELECT DISTINCT ?person ?personLabel ?genderLabel
+                ?film ?filmLabel ?genre ?genreLabel ?year
 WHERE {
 
-  # SCHRITT 1: Vorfilterung auf Personen mit mind. 1 US-Film in 2020.
-  # Die Subquery reduziert die Datenmenge bevor der Rest der Abfrage läuft
-  # und verhindert einen Timeout auf dem WikiData Query Service.
+  -- Vorfilterung: nur Personen mit mehr als 4 US-Filmen im jeweiligen Jahr
   {
-    SELECT ?person
+    SELECT ?person (COUNT(DISTINCT ?film) AS ?filmCount)
     WHERE {
-      ?film wdt:P31  wd:Q11424 ;   # ist ein Film
-            wdt:P161 ?person ;      # mit dieser Person
-            wdt:P495 wd:Q30 ;       # Produktionsland: USA
-            wdt:P577 ?date .        # Erscheinungsdatum
-      FILTER(YEAR(?date) = 2020)
+      ?person wdt:P106 wd:Q33999 ;
+              wdt:P21  ?gender .
+      ?film   wdt:P161 ?person ;
+              wdt:P495 wd:Q30 ;
+              wdt:P577 ?date ;
+              wdt:P136 ?genre .
+      FILTER(YEAR(?date) = [JAHR])
+      FILTER(?genre IN (
+        wd:Q130232, wd:Q157443, wd:Q2484376, wd:Q188473,
+        wd:Q319221, wd:Q24925,  wd:Q157394,  wd:Q369747,
+        wd:Q959790, wd:Q2743,   wd:Q200092,  wd:Q853630,
+        wd:Q1200678, wd:Q1361932, wd:Q1339864, wd:Q846544,
+        wd:Q17013749
+      ))
+      FILTER(?gender IN (wd:Q6581072, wd:Q6581097))
     }
     GROUP BY ?person
-    HAVING(COUNT(DISTINCT ?film) > 0)
+    HAVING(?filmCount > 4)
   }
 
-  # SCHRITT 2: Hauptabfrage
-  # Für die gefilterten Personen Genre und Geschlecht holen.
-  ?film wdt:P31  wd:Q11424 ;        # ist ein Film
-        wdt:P161 ?person ;           # mit dieser Person
-        wdt:P495 wd:Q30 ;            # Produktionsland: USA
-        wdt:P577 ?date ;             # Erscheinungsdatum
-        wdt:P136 ?genre .            # Genre des Films
-
-  FILTER(YEAR(?date) = 2020)
-
-  # SCHRITT 3: Genrefilter
-  # Nur etablierte Hauptgenres behalten. WikiData enthält hunderte von
-  # Genrebezeichnungen die sich teils stark überschneiden. Die Beschränkung
-  # auf 10 Hauptkategorien schafft eine sinnvolle Aggregationsebene.
+  ?person wdt:P21  ?gender .
+  ?film   wdt:P161 ?person ;
+          wdt:P136 ?genre ;
+          wdt:P495 wd:Q30 ;
+          wdt:P577 ?date .
+  BIND(YEAR(?date) AS ?year)
+  FILTER(?year = [JAHR])
   FILTER(?genre IN (
-    wd:Q130232,   # drama film
-    wd:Q157443,   # comedy film
-    wd:Q2484376,  # thriller
-    wd:Q188473,   # action film
-    wd:Q319221,   # adventure film
-    wd:Q959790,   # crime film
-    wd:Q200092,   # horror film
-    wd:Q93204,    # documentary film
-    wd:Q1054574,  # romance film
-    wd:Q859369    # comedy-drama film
+    wd:Q130232, wd:Q157443, wd:Q2484376, wd:Q188473,
+    wd:Q645928, wd:Q319221, wd:Q24925,   wd:Q93204,
+    wd:Q157394, wd:Q369747, wd:Q959790,  wd:Q2743,
+    wd:Q200092, wd:Q853630, wd:Q1200678, wd:Q1361932,
+    wd:Q1339864, wd:Q846544, wd:Q17013749
   ))
-
-  # Schauspieler*innen-Filter und Geschlecht
-  ?person wdt:P106 wd:Q33999 ;      # Beruf: Schauspieler*in
-          wdt:P21  ?gender .         # Geschlecht
-
-  FILTER(?gender IN (
-    wd:Q6581072,                     # weiblich
-    wd:Q6581097                      # männlich
-  ))
-
-  # Lesbare Labels für Genre und Geschlecht auf Englisch
-  SERVICE wikibase:label {
-    bd:serviceParam wikibase:language "en" .
-  }
-}
-GROUP BY ?genre ?genreLabel ?gender ?genderLabel
-ORDER BY ?genreLabel ?genderLabel
-```
-
-## SPARQL-Abfrage(2)
-
-Diese Abfrage ist eine vereinfachte Version der ersten, die nur die Gesamtanzahl aller Schauspieler\*innen je Geschlecht für ein Jahr ausgibt. Die Daten dienen in den Zeitreihen-Diagrammen als Referenzlinien für den allgemeinen Trend.
-
-``` sparql
-SELECT ?genderLabel (COUNT(DISTINCT ?person) AS ?actorCount)
-WHERE {
-  # 1. Filme aus den USA aus einem spezifischen Jahr
-  ?film wdt:P31 wd:Q11424 ;        # ist ein Film
-        wdt:P495 wd:Q30 ;          # Produktionsland: USA
-        wdt:P577 ?date .           # Erscheinungsdatum
-  FILTER(YEAR(?date) = 2016)       # HIER DAS JAHR ÄNDERN (2016 bis 2025)
-
-  # 2. Besetzung des Films abrufen
-  ?film wdt:P161 ?person .
-
-  # 3. Beruf und Geschlecht abfragen
-  ?person wdt:P106 wd:Q33999 ;     # Beruf: Schauspieler*in
-          wdt:P21 ?gender .        # Geschlecht
-  
-  # Auf m/w filtern
   FILTER(?gender IN (wd:Q6581072, wd:Q6581097))
-
-  SERVICE wikibase:label {
-    bd:serviceParam wikibase:language "en" .
-  }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
 }
-GROUP BY ?genderLabel
 ```
+
+Zusätzlich wurde pro Jahr eine aggregierte Abfrage ohne Genre-Aufschlüsselung ausgeführt, die nur die Gesamtzahl an Schauspieler\*innen je Geschlecht liefert. Diese dient in den Zeitreihen-Diagrammen als Referenzlinie für den allgemeinen Trend.
 
 ## Datenaufbereitung
 
@@ -257,20 +203,12 @@ summary
 
 Wie man sehen kann, ist die Stichprobe mit 31.745 Schauspielern und 18.827 Schauspielerinnen insgesamt stark männlich dominiert. Die absolute Anzahl der Schauspieler\*innen ist über alle Genres hinweg deutlich höher als die der Schauspielerinnen, weswegen im Folgenden die prozentualen Anteile betrachtet werden, um die Unterschiede zwischen den Genres besser sichtbar zu machen.
 
-## Methodische Einschränkungen
-
-Folgende Limitierungen sind bei der Interpretation zu berücksichtigen:
-
-- **Selektivität von WikiData:** Nur Personen mit Wikipedia-Einträgen sind erfasst. Weniger bekannte Schauspieler\*innen – und der Forschungsstand legt nahe, dass das überproportional Frauen betrifft – fehlen systematisch, was sich auf den Gender Data Gap zurückführen lässt (vgl. @criadoperez2019).
-- **Binäre Geschlechtskategorisierung:** WikiData erfasst Geschlecht binär (männlich/weiblich). Nicht-binäre Personen sind kaum repräsentiert, was die Analyse auf diese zwei Kategorien beschränkt.
-- **Mindestfilmanzahl:** Der Filter auf mehr als 4 Filmkredits erhöht die Datenqualität, schließt aber Personen mit kürzeren oder diskontinuierlichen Karrieren aus – auch das kann genderspezifisch sein.
-- **Intersektionalität:** Weitere Dimensionen wie Ethnizität oder Alter, die sich in der Realität stark auf die Geschlechterverteilung auswirken, wurden des Umfangs wegen in dieser Analyse nicht berücksichtigt (vgl. @crenshaw1989).
 
 # Ergebnisse
 
 ## Gesamtverteilung der Stichprobe
 
-wie in der Einleitung beschrieben, ist die Stichprobe insgesamt stark männlich dominiert. Konkret beschreibt sie ein Verhältnis von etwa 63% zu 37%. Die absolute Anzahl der Schauspieler ist über alle Genres hinweg deutlich höher als die der Schauspielerinnen, weswegen im Folgenden die prozentualen Anteile betrachtet werden, um die Unterschiede zwischen den Genres besser sichtbar zu machen.
+wie in dem Abschnitt zur Datenaufbereitung beschrieben, ist die Stichprobe insgesamt stark männlich dominiert. Konkret beschreibt sie ein Verhältnis von etwa 63% zu 37%. Die absolute Anzahl der Schauspieler ist über alle Genres hinweg deutlich höher als die der Schauspielerinnen, weswegen im Folgenden die prozentualen Anteile betrachtet werden, um die Unterschiede zwischen den Genres besser sichtbar zu machen.
 
 ```{python}
 # label: abb-grundverteilung
@@ -281,7 +219,7 @@ create_bar_chart(df_processed_abs, OUTPUT_CHARTS / "gender_by_genre.png")
 
 ![](output/charts/gender_by_genre.png)
 
-Das Balkendiagramm zeigt die prozentuale Gender-Verteilung innerhalb jedes Genres, aggregiert über alle Jahre von 2016 bis 2025. In allen sieben Genres sind Männer in der Mehrheit, jedoch unterscheiden sich die Ausmaße erheblich. Am stärksten männlich dominiert sind Action und Thriller & Crime, mit einem Männeranteil von rund 70–75%. Schauspielerinnen machen hier nur etwa ein Viertel bis knapp ein Drittel der Besetzungen aus. Drama und Comedy liegen nahe am Gesamtdurchschnitt von 37% Frauenanteil und zeigen keine auffälligen Abweichungen. Romance ist das einzige Genre, in dem annähernde Parität erreicht wird, der Frauenanteil liegt hier deutlich über dem Gesamtdurchschnitt. Horror liegt ebenfalls leicht über dem Schnitt. Documentary fällt auf, weil hier der Frauenanteil trotz vergleichsweise kleiner absoluter Zahlen relativ hoch und gleichzeitig am stärksten schwankend ist. Das Muster bestätigt, was feministische Medienforschung bereits dokumentiert hat: Genres sind keine neutralen Kategorien, sondern kulturell codierte Räume mit impliziten Geschlechtererwartungen [@smith2019]. Im Sinne von Collins' Hegemonic Domain erscheint die Unterrepräsentation von Frauen in Action- und Thriller-Filmen nicht als Ausschluss, sondern als vermeintlich natürliches Ergebnis, diese Genres gelten kulturell als „männlich" [@collins1990].
+Das Balkendiagramm zeigt die prozentuale Gender-Verteilung innerhalb jedes Genres, aggregiert über alle Jahre von 2016 bis 2025. In allen sieben Genres sind Männer in der Mehrheit, jedoch unterscheiden sich die Ausmaße erheblich. Am stärksten männlich dominiert sind Action und Thriller & Crime, mit einem Männeranteil von rund 70–75%. Schauspielerinnen machen hier nur etwa ein Viertel bis knapp ein Drittel der Besetzungen aus. Drama und Comedy liegen nahe am Gesamtdurchschnitt von 37% Frauenanteil und zeigen keine auffälligen Abweichungen. Romance ist das einzige Genre, in dem annähernde Gleichheit erreicht wird, der Frauenanteil liegt hier deutlich über dem Gesamtdurchschnitt. Horror liegt ebenfalls leicht über dem Schnitt. Documentary fällt auf, weil hier der Frauenanteil trotz vergleichsweise kleiner absoluter Zahlen relativ hoch und gleichzeitig am stärksten schwankend ist. Das Muster bestätigt, was feministische Medienforschung bereits dokumentiert hat: Genres sind keine neutralen Kategorien, sondern kulturell codierte Räume mit impliziten Geschlechtererwartungen [@smith2019]. Im Sinne von Collins' Hegemonic Domain erscheint die Unterrepräsentation von Frauen in Action- und Thriller-Filmen nicht als Ausschluss, sondern als vermeintlich natürliches Ergebnis, diese Genres gelten kulturell als „männlich" [@collins1990].
 
 ## Genre-Trends im Zeitverlauf (2016–2025)
 
@@ -315,7 +253,7 @@ Der Frauenanteil im Action-Genre liegt konstant zwischen 30–35% und bewegt sic
 
 ## Absolute Entwicklung
 
-Das Liniendiagramm der absoluten Zahlen zeigt einen überraschenden Befund: Die Gesamtzahl der in WikiData erfassten Schauspieler\*innen ist seit 2016 nicht gestiegen, sondern deutlich gesunken – von rund 3.250 Schauspielern und 1.820 Schauspielerinnen im Jahr 2016 auf jeweils etwa 2.030 bzw. 1.300 im Jahr 2025. Der stärkste Einbruch ist in den Jahren 2020–2021 sichtbar und auf die COVID-19-Pandemie zurückzuführen, die Filmproduktionen weltweit zum Erliegen rachte. Bemerkenswert ist, dass der Rückgang bei Schauspielerinnen absolut stärker ausfiel als bei Schauspielern: Während die Männerzahlen nach 2021 wieder auf etwa 2.000 anstiegen, blieb die Frauenzahl dauerhaft unter dem Vor-Pandemie-Niveau. Das prozentuale Verhältnis verschlechterte sich damit in der Pandemie und erholte sich danach nicht vollständig, was zeigt, dass externe Krisen bestehende Ungleichheiten tendenziell verstärken [@criadoperez2019]. Der generelle Rückgang der absoluten Zahlen ab 2016 ist zudem teilweise methodisch bedingt: WikiData-Einträge für neuere Filme und Personen werden häufig mit zeitlichem Verzug angelegt, sodass jüngere Jahre strukturell untererfasst sein könnten.
+Das Liniendiagramm der absoluten Zahlen zeigt einen überraschenden Befund: Die Gesamtzahl der in WikiData erfassten Schauspieler\*innen ist seit 2016 nicht gestiegen, sondern deutlich gesunken – von rund 3.250 Schauspielern und 1.820 Schauspielerinnen im Jahr 2016 auf jeweils etwa 2.030 bzw. 1.300 im Jahr 2025. Der stärkste Einbruch ist in den Jahren 2020–2021 sichtbar und auf die COVID-19-Pandemie zurückzuführen, die Filmproduktionen weltweit zum Erliegen brachte. Bemerkenswert ist, dass der Rückgang bei Schauspielerinnen absolut stärker ausfiel als bei Schauspielern: Während die Männerzahlen nach 2021 wieder auf etwa 2.000 anstiegen, blieb die Frauenzahl dauerhaft unter dem Vor-Pandemie-Niveau. Das prozentuale Verhältnis verschlechterte sich damit in der Pandemie und erholte sich danach nicht vollständig, was zeigt, dass externe Krisen bestehende Ungleichheiten tendenziell verstärken [@criadoperez2019]. Der generelle Rückgang der absoluten Zahlen ab 2016 ist zudem teilweise methodisch bedingt: WikiData-Einträge für neuere Filme und Personen werden häufig mit zeitlichem Verzug angelegt, sodass jüngere Jahre strukturell untererfasst sein könnten.
 
 ```{python}
 #| label: abb-absolut
@@ -344,7 +282,7 @@ Die vorliegende Analyse ist in mehrfacher Hinsicht eingeschränkt, was bei der I
 
 Die wichtigste Einschränkung betrifft die Selektivität von WikiData als Datenquelle. Nur Personen mit Wikipedia-Einträgen sind erfasst, und die Vollständigkeit dieser Einträge variiert erheblich. Weniger bekannte Schauspielerinnen und Schauspieler fehlen systematisch, wobei der Forschungsstand nahelegt, dass dieser Effekt genderspezifisch ist und Frauen überproportional betrifft [@wagner2015]. Die hier gemessenen Anteile sind daher als Untergrenze der tatsächlichen Ungleichheit zu verstehen – die reale Situation dürfte noch stärker zugunsten von Männern verzerrt sein.
 
-Die Beschränkung auf einen Mindestfilmanzahl von mehr als vier Kredits pro Jahr verbessert zwar die Datenqualität, schließt aber Personen mit diskontinuierlichen oder kürzeren Karrieren aus. Da Schauspielerinnen im Schnitt kürzere Karrieren haben als Schauspieler, könnte auch dieser Filter eine strukturelle Verzerrung zugunsten der gut dokumentierten, stabilen Karrieren – tendenziell männlich – einführen.
+Die Beschränkung auf eine Mindestfilmanzahl von mehr als vier pro Jahr verbessert zwar die Datenqualität, schließt aber Personen mit diskontinuierlichen oder kürzeren Karrieren aus. Da Schauspielerinnen im Schnitt kürzere Karrieren haben als Schauspieler, könnte auch dieser Filter eine strukturelle Verzerrung zugunsten der gut dokumentierten, stabilen Karrieren – tendenziell männlich – einführen.
 
 Die binäre Geschlechtskategorisierung ist eine weitere wesentliche Einschränkung. WikiData erfasst Geschlecht überwiegend binär, was bedeutet dass nicht-binäre und genderdiverse Personen in der Analyse vollständig unsichtbar bleiben. Aus intersektionaler Perspektive ist dies besonders problematisch: Crenshaw zeigt, dass Diskriminierung selten eindimensional ist und sich Geschlecht mit Ethnizität, Klasse, Alter und anderen Faktoren überlagert [@crenshaw1989]. Eine Analyse, die nur zwischen männlich und weiblich unterscheidet, kann diese Überlagerungen nicht abbilden und homogenisiert damit sehr unterschiedliche Erfahrungen unter einer einheitlichen Kategorie.
 
