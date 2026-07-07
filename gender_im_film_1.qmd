@@ -135,59 +135,108 @@ Auf Basis dieser Häufigkeiten wurden die sieben relevantesten Kategorien identi
 | Horror           | horror film                             |
 | Romance          | romance film                            |
 
-## Hauptabfrage
+## SPARQL-Abfragen
+### SPARQL-Abfrage (1)
 
 Für jedes Jahr von 2016 bis 2025 wurde folgende SPARQL-Abfrage einzeln ausgeführt und als CSV exportiert (Jahreszahl entsprechend angepasst):
 
 ``` sparql
-SELECT DISTINCT ?person ?personLabel ?genderLabel
-                ?film ?filmLabel ?genre ?genreLabel ?year
+SELECT ?genderLabel ?genreLabel
+       (COUNT(DISTINCT ?person) AS ?actorCount)
 WHERE {
 
-  -- Vorfilterung: nur Personen mit mehr als 4 US-Filmen im jeweiligen Jahr
+  # SCHRITT 1: Vorfilterung auf Personen mit mind. 1 US-Film in 2020.
+  # Die Subquery reduziert die Datenmenge bevor der Rest der Abfrage läuft
+  # und verhindert einen Timeout auf dem WikiData Query Service.
   {
-    SELECT ?person (COUNT(DISTINCT ?film) AS ?filmCount)
+    SELECT ?person
     WHERE {
-      ?person wdt:P106 wd:Q33999 ;
-              wdt:P21  ?gender .
-      ?film   wdt:P161 ?person ;
-              wdt:P495 wd:Q30 ;
-              wdt:P577 ?date ;
-              wdt:P136 ?genre .
-      FILTER(YEAR(?date) = [JAHR])
-      FILTER(?genre IN (
-        wd:Q130232, wd:Q157443, wd:Q2484376, wd:Q188473,
-        wd:Q319221, wd:Q24925,  wd:Q157394,  wd:Q369747,
-        wd:Q959790, wd:Q2743,   wd:Q200092,  wd:Q853630,
-        wd:Q1200678, wd:Q1361932, wd:Q1339864, wd:Q846544,
-        wd:Q17013749
-      ))
-      FILTER(?gender IN (wd:Q6581072, wd:Q6581097))
+      ?film wdt:P31  wd:Q11424 ;   # ist ein Film
+            wdt:P161 ?person ;      # mit dieser Person
+            wdt:P495 wd:Q30 ;       # Produktionsland: USA
+            wdt:P577 ?date .        # Erscheinungsdatum
+      FILTER(YEAR(?date) = 2020)
     }
     GROUP BY ?person
-    HAVING(?filmCount > 4)
+    HAVING(COUNT(DISTINCT ?film) > 0)
   }
 
-  ?person wdt:P21  ?gender .
-  ?film   wdt:P161 ?person ;
-          wdt:P136 ?genre ;
-          wdt:P495 wd:Q30 ;
-          wdt:P577 ?date .
-  BIND(YEAR(?date) AS ?year)
-  FILTER(?year = [JAHR])
+  # SCHRITT 2: Hauptabfrage
+  # Für die gefilterten Personen Genre und Geschlecht holen.
+  ?film wdt:P31  wd:Q11424 ;        # ist ein Film
+        wdt:P161 ?person ;           # mit dieser Person
+        wdt:P495 wd:Q30 ;            # Produktionsland: USA
+        wdt:P577 ?date ;             # Erscheinungsdatum
+        wdt:P136 ?genre .            # Genre des Films
+
+  FILTER(YEAR(?date) = 2020)
+
+  # SCHRITT 3: Genrefilter
+  # Nur etablierte Hauptgenres behalten. WikiData enthält hunderte von
+  # Genrebezeichnungen die sich teils stark überschneiden. Die Beschränkung
+  # auf 10 Hauptkategorien schafft eine sinnvolle Aggregationsebene.
   FILTER(?genre IN (
-    wd:Q130232, wd:Q157443, wd:Q2484376, wd:Q188473,
-    wd:Q645928, wd:Q319221, wd:Q24925,   wd:Q93204,
-    wd:Q157394, wd:Q369747, wd:Q959790,  wd:Q2743,
-    wd:Q200092, wd:Q853630, wd:Q1200678, wd:Q1361932,
-    wd:Q1339864, wd:Q846544, wd:Q17013749
+    wd:Q130232,   # drama film
+    wd:Q157443,   # comedy film
+    wd:Q2484376,  # thriller
+    wd:Q188473,   # action film
+    wd:Q319221,   # adventure film
+    wd:Q959790,   # crime film
+    wd:Q200092,   # horror film
+    wd:Q93204,    # documentary film
+    wd:Q1054574,  # romance film
+    wd:Q859369    # comedy-drama film
   ))
-  FILTER(?gender IN (wd:Q6581072, wd:Q6581097))
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
+
+  # Schauspieler*innen-Filter und Geschlecht
+  ?person wdt:P106 wd:Q33999 ;      # Beruf: Schauspieler*in
+          wdt:P21  ?gender .         # Geschlecht
+
+  FILTER(?gender IN (
+    wd:Q6581072,                     # weiblich
+    wd:Q6581097                      # männlich
+  ))
+
+  # Lesbare Labels für Genre und Geschlecht auf Englisch
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "en" .
+  }
 }
+GROUP BY ?genre ?genreLabel ?gender ?genderLabel
+ORDER BY ?genreLabel ?genderLabel
 ```
 
+### SPARQL-Abfrage (2)
+
 Zusätzlich wurde pro Jahr eine aggregierte Abfrage ohne Genre-Aufschlüsselung ausgeführt, die nur die Gesamtzahl an Schauspieler\*innen je Geschlecht liefert. Diese dient in den Zeitreihen-Diagrammen als Referenzlinie für den allgemeinen Trend.
+
+``` sparql
+SELECT ?genderLabel (COUNT(DISTINCT ?person) AS ?actorCount)
+WHERE {
+  # 1. Filme aus den USA aus einem spezifischen Jahr
+  ?film wdt:P31 wd:Q11424 ;        # ist ein Film
+        wdt:P495 wd:Q30 ;          # Produktionsland: USA
+        wdt:P577 ?date .           # Erscheinungsdatum
+  FILTER(YEAR(?date) = 2016)       # HIER DAS JAHR ÄNDERN (2016 bis 2025)
+
+  # 2. Besetzung des Films abrufen
+  ?film wdt:P161 ?person .
+
+  # 3. Beruf und Geschlecht abfragen
+  ?person wdt:P106 wd:Q33999 ;     # Beruf: Schauspieler*in
+          wdt:P21 ?gender .        # Geschlecht
+  
+  FILTER(?gender IN (
+    wd:Q6581072,                   # weiblich
+    wd:Q6581097                    # männlich
+    ))
+
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "en" .
+  }
+}
+GROUP BY ?genderLabel
+```
 
 ## Datenaufbereitung
 
