@@ -4,48 +4,87 @@ Dieses Repository untersucht die Geschlechterverteilung von Schauspieler*innen i
 
 Die Analyse verbindet Daten aus WikiData mit einer reproduzierbaren Datenaufbereitung, automatisierten Visualisierungen und einem Quarto-Report. Sie eignet sich sowohl als Einstieg in die Themenfelder Data Science, Gender Studies und digitale Methoden als auch als Basis für weiterführende Analysen.
 
+
+
+## Projektstruktur
+
+```
+genderbias-datascience/
+│
+├── main.py                    # Hauptskript zur Datenaufbereitung und Generierung der Visualisierungen
+│
+├── src/
+│   ├── process.py             # Einlesen, Zusammenführen und Aufbereiten der Daten
+│   ├── visualize.py           # Erzeugung der Diagramme
+│   └── config.py              # Konfigurationen für Genre-Mapping und Diagramme
+│
+├── data_raw_1/                # Rohdaten zu Genre- und Filmzuordnungen (je eine CSV pro Jahr)
+├── data_raw_2/                # Rohdaten zu aggregierten Jahreszahlen (je eine CSV pro Jahr)
+│
+├── output/
+│   ├── charts/                # Erzeugte Diagramme (.png)
+│   └── data/                  # Aufbereitete Datensätze (.csv)
+│
+├── gender_im_film_1.qmd       # Quarto-Report mit Einleitung, Methodik und Ergebnissen
+├── references.bib             # Literaturverzeichnis für den Report
+└── gender_im_film_cache/      # Cache-Dateien für die Quarto-Erzeugung
+```
+
 ## Reproduzierbarkeit
 
-Das Projekt ist so angelegt, dass die Datenaufbereitung, die Erstellung der Auswertungen und die Generierung des Reports nachvollziehbar und wiederholbar sind.
+Alle Schritte der Analyse sind vollständig reproduzierbar. Die Rohdaten wurden
+manuell über den [WikiData Query Service](https://query.wikidata.org/) erhoben
+und sind im Repository unter `data_raw_1/` und `data_raw_2/` gespeichert, sodass
+keine erneute API-Abfrage notwendig ist.
 
 ### Voraussetzungen
 
-- Python 3.x
-- Quarto
-- Eine Python-Umgebung mit den benötigten Paketen wie pandas und matplotlib
+- Python 3.10 oder höher
+- [Quarto](https://quarto.org/) 1.9 oder höher
+- Empfohlen: ein eigenes virtuelles Environment
 
-### Ablauf
+### Installation
 
-1. Virtuelle Umgebung aktivieren
-   - Beispiel unter Windows:
-     `.\venv_win\Scripts\Activate.ps1`
+```bash
+# Repository klonen
+git clone https://github.com/lea1nett/genderbias-datascience.git
+cd genderbias-datascience
 
-2. Datenverarbeitung ausführen
-   - `python main.py`
-   - Dieses Skript lädt die Rohdaten, bereitet sie auf und erzeugt die verarbeiteten CSV-Dateien sowie die Grafiken im Ordner [output](output).
+# Virtuelles Environment erstellen und aktivieren
+python -m venv venv_win
+# Windows:
+venv_win\Scripts\Activate.ps1
+# macOS/Linux:
+source venv_win/bin/activate
 
-3. Report erzeugen
-   - `quarto render gender_im_film_1.qmd --to pdf`
-   - Dadurch wird der Quarto-Report als PDF erstellt.
+# Abhängigkeiten installieren
+pip install pandas matplotlib seaborn requests nbformat nbclient nbconvert ipykernel pyyaml
+```
 
-### Erwartete Ausgaben
+### Ausführung
 
-- Verarbeitete Daten in [output/data](output/data)
-- Diagramme in [output/charts](output/charts)
-- Quarto-Report als PDF im Projektordner
+**Nur Datenaufbereitung und Diagramme:**
 
-## Aufbau und Struktur des Repositories
+```bash
+python main.py
+```
 
-- [main.py](main.py) – Hauptskript zur Datenaufbereitung und Generierung der Visualisierungen
-- [src/process.py](src/process.py) – Einlesen, Zusammenführen und Aufbereiten der Daten
-- [src/visualize.py](src/visualize.py) – Erzeugung der Diagramme
-- [src/config.py](src/config.py) – Konfigurationen für Genre-Mapping und Diagramme
-- [gender_im_film_1.qmd](gender_im_film_1.qmd) – Quarto-Report mit Einleitung, Methodik und Ergebnissen
-- [data_raw_1](data_raw_1) – Rohdaten zu Genre- und Filmzuordnungen
-- [data_raw_2](data_raw_2) – Rohdaten zu aggregierten Jahreszahlen
-- [output](output) – erzeugte Daten und Grafiken
-- [references.bib](references.bib) – Literaturverzeichnis für den Report
-- [gender_im_film_cache](gender_im_film_cache) – Cache-Dateien für die Quarto-Erzeugung
+Die erzeugten Diagramme werden unter `output/charts/` gespeichert,
+die aufbereiteten Datensätze unter `output/data/`.
+
+**Quarto-Report rendern:**
+
+```bash
+# Umgebungsvariable setzen (Windows)
+$env:QUARTO_PYTHON = "venv_win\Scripts\python.exe"
+
+# Report als PDF rendern
+quarto render gender_im_film_1.qmd --to pdf
+
+# Report als HTML rendern
+quarto render gender_im_film_1.qmd --to html
+```
+
 
 ## Mitwirkende
 
