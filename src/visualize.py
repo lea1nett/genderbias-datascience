@@ -4,7 +4,7 @@ from matplotlib.ticker import MaxNLocator
 from pathlib import Path
 from config import COLORS, CHART_SETTINGS
 
-def create_bar_chart(df, output_path):
+def create_bar_chart(df, output_path, verbose=False):
     """Erstellt Balkendiagramm: Gesamtverteilung pro Genre."""
     # Berechne pro Genre den prozentualen Anteil (über alle Jahre)
     df_total = df.groupby(['genre_simplified', 'genderLabel'])['actorCount'].sum().reset_index()
@@ -33,9 +33,10 @@ def create_bar_chart(df, output_path):
     output_path.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(output_path, dpi=CHART_SETTINGS['dpi'], bbox_inches='tight')
     plt.close()
-    print(f"✓ Balken Chart gespeichert: {output_path}")
+    if verbose:
+        print(f"✓ Balken Chart gespeichert: {output_path}")
 
-def create_line_charts(df, output_dir, overall_share_df=None):
+def create_line_charts(df, output_dir, overall_share_df=None, verbose=False):
     """Erstellt Line Charts pro Genre mit Jahrestrend."""
     
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -76,11 +77,12 @@ def create_line_charts(df, output_dir, overall_share_df=None):
         output_path = output_dir / f'gender_trend_{genre.lower().replace("_", "")}.png'
         plt.savefig(output_path, dpi=CHART_SETTINGS['dpi'], bbox_inches='tight')
         plt.close()
-        print(f"✓ Line Chart gespeichert: {output_path}")
+        if verbose:
+            print(f"✓ Line Chart gespeichert: {output_path}")
     
     return len(genres)
 
-def create_absolute_line_chart(year_counts_list, output_path):
+def create_absolute_line_chart(year_counts_list, output_path, verbose=False):
     """Erstellt eine Linie mit absoluten Schauspielerzahlen (male/female) über Jahre."""
     # year_counts_list: [{year: [male, female]}, ...]
     rows = []
@@ -109,4 +111,5 @@ def create_absolute_line_chart(year_counts_list, output_path):
     output_path.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(output_path, dpi=CHART_SETTINGS['dpi'], bbox_inches='tight')
     plt.close()
-    print(f"✓ Absolute Line Chart gespeichert: {output_path}")
+    if verbose:
+        print(f"✓ Absolute Line Chart gespeichert: {output_path}")

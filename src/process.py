@@ -2,13 +2,14 @@ import pandas as pd
 import re
 from config import GENRE_MAPPING
 
-def load_and_process_data(data_raw_counts_path, data_raw_genre_path):
+def load_and_process_data(data_raw_counts_path, data_raw_genre_path, verbose=False):
     """Lädt CSV-Dateien aus data_raw_2 für Jahreszahlen und data_raw_1 für Genre-Daten."""
     data_frame_list_counts = []
     data_frame_list_genre = []
 
     for idx, data_raw_path in enumerate((data_raw_counts_path, data_raw_genre_path)):
-        print(f"\nLese Daten aus: {data_raw_path}")
+        if verbose:
+            print(f"\nLese Daten aus: {data_raw_path}")
         csv_files = sorted(data_raw_path.glob("*.csv"))
 
         if not csv_files:
@@ -26,11 +27,13 @@ def load_and_process_data(data_raw_counts_path, data_raw_genre_path):
                 data_frame_list_counts.append(df)
             else:
                 data_frame_list_genre.append(df)
-            print(f"✓ '{csv_file.name}' eingelesen - Jahr: {year} ({len(df)} Zeilen)")
+            if verbose:
+                print(f"✓ '{csv_file.name}' eingelesen - Jahr: {year} ({len(df)} Zeilen)")
 
-    print("="*80)
-    print("DATENAUFBEREITUNG")
-    print("="*80)
+    if verbose:
+        print("="*80)
+        print("DATENAUFBEREITUNG")
+        print("="*80)
 
     # data_raw_counts_path (data_raw_2): enthält nur Jahreszahlen pro Geschlecht
     if not data_frame_list_counts:
@@ -69,14 +72,16 @@ def load_and_process_data(data_raw_counts_path, data_raw_genre_path):
 
     df_processed_pct = df_abs_total.copy()
 
-    print(f"\n✓ Daten verarbeitet: {len(df_abs)} Zeilen (absolute Aggregation)")
-    print(f"✓ Jahre: {sorted(df_abs['year'].unique())}")
-    print(f"✓ Genres: {sorted(df_abs['genre_simplified'].unique())}")
+    if verbose:
+        print(f"\n✓ Daten verarbeitet: {len(df_abs)} Zeilen (absolute Aggregation)")
+        print(f"✓ Jahre: {sorted(df_abs['year'].unique())}")
+        print(f"✓ Genres: {sorted(df_abs['genre_simplified'].unique())}")
 
     return df_processed_pct, df_abs, year_counts_list, overall_share_df
 
-def save_processed_data(df, output_path):
+def save_processed_data(df, output_path, verbose=False):
     """Speichert verarbeitete Daten als CSV."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(output_path, index=False)
-    print(f"\n✓ Processed Data gespeichert: {output_path}")
+    if verbose:
+        print(f"\n✓ Processed Data gespeichert: {output_path}")
