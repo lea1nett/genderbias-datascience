@@ -52,8 +52,7 @@ OUTPUT_CHARTS = OUTPUT_DIR / "charts"
 
 Wer im Kino sitzt und auf die Leinwand schaut, sieht nicht die Welt, sondern eine kuratierte Version davon. Seit Beginn der Filmgeschichte bestimmen strukturelle Ungleichheiten, welche Geschichten erzählt werden, wer sie erzählt und wer darin sichtbar ist. Sie spiegeln gesellschaftliche Normen und Machtverhältnisse wieder und verstärken diese gleichzeitig. Wer auf der Leinwand sichtbar ist, welche Rollen Frauen und Männer einnehmen und in welchen Genres sie auftreten, sendet implizite Botschaften darüber, wessen Geschichten erzählenswert sind. Studien zeigen konsistent, dass Frauen im Film sowohl quantitativ als auch qualitativ unterrepräsentiert sind: Sie erhalten weniger Rollen, sprechen weniger Dialogzeilen und werden häufiger auf bestimmte Genres beschränkt [@smith2019].
 
-Diese Ungleichheit ist kein Zufall und kein bloßes Abbild von Publikumspräferenzen. Sie ist das Ergebnis historisch gewachsener Machtstrukturen, die bestimmen, wessen Perspektive als „normal" gilt, und wessen nicht, eingebettet in diesen strukturellen Machtverhältnissen wird bestimmt, welche Genres als prestige- oder budgetträchtig gelten, wer Castingentscheidungen trifft und welche Karrieren als dokumentationswürdig angesehen werden. Gerade letzteres ist für diese Analyse besonders relevant: WikiData ist eine freie, kollaborative Wissensdatenbank, die strukturierte Daten in Form von *Items* (Q-IDs) und *Properties* (P-IDs) bereitstellt, welche sich über SPARQL abfragen lassen [@vrandecic2014]. Als Datenquelle bietet sie freie Verfügbarkeit, maschinenlesbare Struktur und eine breite Abdeckung von Filmproduktionen und Personen. WikiData als Datenquelle ist jedoch kein neutrales Archiv, sondern ein kollaborativ erstelltes Abbild davon, wessen Existenz und Karriere als relevant genug erachtet wird, um dokumentiert zu werden.
-Die vorliegende Analyse untersucht diese Ungleichheit datengestützt auf Basis von WikiData – und reflektiert dabei, inwiefern die Datenquelle selbst Teil des Problems sein könnte.
+Diese Ungleichheit ist kein Zufall und kein bloßes Abbild von Publikumspräferenzen. Sie ist das Ergebnis historisch gewachsener Machtstrukturen, die bestimmen, wessen Perspektive als „normal" gilt, und wessen nicht, eingebettet in diesen strukturellen Machtverhältnissen wird bestimmt, welche Genres als prestige- oder budgetträchtig gelten, wer Castingentscheidungen trifft und welche Karrieren als dokumentationswürdig angesehen werden. Gerade letzteres ist für diese Analyse besonders relevant: WikiData ist eine freie, kollaborative Wissensdatenbank, die strukturierte Daten in Form von *Items* (Q-IDs) und *Properties* (P-IDs) bereitstellt, welche sich über SPARQL abfragen lassen [@vrandecic2014]. Als Datenquelle bietet sie freie Verfügbarkeit, maschinenlesbare Struktur und eine breite Abdeckung von Filmproduktionen und Personen. WikiData als Datenquelle ist jedoch kein neutrales Archiv, sondern ein kollaborativ erstelltes Abbild davon, wessen Existenz und Karriere als relevant genug erachtet wird, um dokumentiert zu werden. Die vorliegende Analyse untersucht diese Ungleichheit datengestützt auf Basis von WikiData – und reflektiert dabei, inwiefern die Datenquelle selbst Teil des Problems sein könnte.
 
 ## Fragestellung
 
@@ -94,10 +93,9 @@ Zusammen erklären diese vier Ebenen, warum Genreungleichheit so stabil ist: Sie
 
 Kimberlé Crenshaw betont, dass Diskriminierung selten eindimensional ist [@crenshaw1989]: Geschlecht überlagert sich mit Ethnizität, Klasse, Alter und weiteren Faktoren. Diese Analyse kann Intersektionalität nicht abbilden, da WikiData außer Geschlecht kaum weitere demografische Eigenschaften systematisch erfasst. Dies ist eine bewusst reflektierte Limitation – und selbst ein Ausdruck des Gender Data Gap.
 
+# Methodik und Stichprobe
 
-## Stichprobe
-
-### Vorauswahl der Genres
+## Vorauswahl der Genres
 
 Um aus den hunderten in WikiData erfassten Genrebezeichnungen eine sinnvolle Auswahl zu treffen, wurde zunächst die Häufigkeit der wichtigsten Genres in US-Filmen seit 2016 ermittelt:
 
@@ -127,7 +125,7 @@ Auf Basis dieser Häufigkeiten wurden die sieben relevantesten Kategorien identi
 | Horror           | horror film                             |
 | Romance          | romance film                            |
 
-### Hauptabfrage
+## Hauptabfrage
 
 Für jedes Jahr von 2016 bis 2025 wurde folgende SPARQL-Abfrage einzeln ausgeführt und als CSV exportiert (Jahreszahl entsprechend angepasst):
 
@@ -202,7 +200,6 @@ summary
 ```
 
 Wie man sehen kann, ist die Stichprobe mit 31.745 Schauspielern und 18.827 Schauspielerinnen insgesamt stark männlich dominiert. Die absolute Anzahl der Schauspieler\*innen ist über alle Genres hinweg deutlich höher als die der Schauspielerinnen, weswegen im Folgenden die prozentualen Anteile betrachtet werden, um die Unterschiede zwischen den Genres besser sichtbar zu machen.
-
 
 # Ergebnisse
 
