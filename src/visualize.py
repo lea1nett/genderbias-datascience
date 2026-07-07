@@ -19,7 +19,7 @@ def create_bar_chart(df, output_path, verbose=False):
                 color=[COLORS['male'], COLORS['female']],
                 width=0.8)
 
-    ax.set_title('Gender-Verteilung pro Filmgenre (in %)', 
+    ax.set_title('Gender-Verteilung pro Filmgenre von 2016-2025 (in %)', 
                   fontsize=CHART_SETTINGS['fontsize_title'], fontweight='bold')
     ax.set_xlabel('Genre', fontsize=CHART_SETTINGS['fontsize_label'])
     ax.set_ylabel('Prozent', fontsize=CHART_SETTINGS['fontsize_label'])
@@ -54,14 +54,14 @@ def create_line_charts(df, output_dir, overall_share_df=None, verbose=False):
                     linewidth=CHART_SETTINGS['linewidth'],
                     markersize=CHART_SETTINGS['markersize'],
                     color=COLORS[gender],
-                    label=f'{gender_labels[gender]} Genre')
+                    label=f'{gender_labels[gender]} Anteil im Genre')
 
         if overall_share_df is not None:
             overall_share = overall_share_df.set_index('year').reindex(df_pivot.index).ffill().fillna(0)
             for gender in gender_order:
                 ax.plot(overall_share.index, overall_share[gender], linestyle='--', 
                         linewidth=2, color=COLORS[gender],
-                        label=f'{gender_labels[gender]} Gesamt')
+                        label=f'{gender_labels[gender]} Anteil insgesamt')
 
         ax.set_title(f'Gender-Trend (in %): {genre} (2016-2025)', 
                       fontsize=CHART_SETTINGS['fontsize_title'], fontweight='bold')
@@ -99,9 +99,9 @@ def create_absolute_line_chart(year_counts_list, output_path, verbose=False):
                   markersize=CHART_SETTINGS['markersize'],
                   color=[COLORS['male'], COLORS['female']])
 
-    ax.set_title('Absolute Anzahl Schauspieler nach Geschlecht (2016-2025)', fontsize=CHART_SETTINGS['fontsize_title'], fontweight='bold')
+    ax.set_title('Absolute Anzahl Schauspieler*innen nach Geschlecht (2016-2025)', fontsize=CHART_SETTINGS['fontsize_title'], fontweight='bold')
     ax.set_xlabel('Jahr', fontsize=CHART_SETTINGS['fontsize_label'])
-    ax.set_ylabel('Anzahl Schauspieler', fontsize=CHART_SETTINGS['fontsize_label'])
+    ax.set_ylabel('Anzahl Schauspieler*innen', fontsize=CHART_SETTINGS['fontsize_label'])
     ax.set_ylim(bottom=0)
     ax.yaxis.set_major_locator(MaxNLocator(nbins=8, integer=True))
     ax.legend(['Männer', 'Frauen'], fontsize=CHART_SETTINGS['fontsize_legend'])
