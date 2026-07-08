@@ -1,0 +1,6 @@
+Für die Erstellung dieser Arbeit wurde KI (Claude, Chatgpt) in den folgenden Aspekten genutzt:
+
+- Erstellung der references.bib datei
+- Hilfe bei der Erstellung der sparql-Abfragen
+- Hilfe beim schreiben von Code für die Visualierungen 
+- Fehlerbehebung im Code
