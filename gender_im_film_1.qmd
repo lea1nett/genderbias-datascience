@@ -66,7 +66,6 @@ Die Stichprobe ist wie folgt eingegrenzt:
 
 - **Produktionsland:** Ausschließlich US-amerikanische Produktionen (WikiData Property P495 = USA). Die Einschränkung auf das Produktionsland – nicht die Nationalität der Schauspieler\*innen – wurde gewählt, weil für eine Genreanalyse der strukturelle Produktionskontext entscheidend ist. Eine deutsche Schauspielerin in einem Hollywood-Film unterliegt denselben Casting- und Genrestrukturen wie ihre amerikanischen Kolleg\*innen.
 - **Zeitraum:** 2016 bis 2025, um aktuelle Entwicklungen abzubilden und einen Zeitverlauf analysieren zu können.
-- **Mindestfilmanzahl:** Nur Personen die in mehr als vier Filmen mitgespielt haben, im jeweiligen Jahr, werden berücksichtigt. Personen mit sehr wenigen Erscheinungen erzeugen statistisches Rauschen und sind in WikiData häufig unvollständig dokumentiert.
 - **Genres:** Beschränkung auf sieben übergeordnete Hauptkategorien (Drama, Comedy, Action, Thriller & Crime, Horror, Romance, Documentary), die aus einer Voranalyse der häufigsten WikiData-Genres abgeleitet wurden.
 
 ## Stand der Forschung
@@ -353,8 +352,6 @@ Schließlich ist der Gender Data Gap nicht nur ein Befund über die Filmindustri
 Die vorliegende Analyse ist in mehrfacher Hinsicht eingeschränkt, was bei der Interpretation der Ergebnisse berücksichtigt werden muss.
 
 Die wichtigste Einschränkung betrifft die Selektivität von WikiData als Datenquelle. Nur Personen mit Wikipedia-Einträgen sind erfasst, und die Vollständigkeit dieser Einträge variiert erheblich. Weniger bekannte Schauspielerinnen und Schauspieler fehlen systematisch, wobei der Forschungsstand nahelegt, dass dieser Effekt genderspezifisch ist und Frauen überproportional betrifft [@wagner2015]. Die hier gemessenen Anteile sind daher als Untergrenze der tatsächlichen Ungleichheit zu verstehen – die reale Situation dürfte noch stärker zugunsten von Männern verzerrt sein.
-
-Die Beschränkung auf eine Mindestfilmanzahl von mehr als vier pro Jahr verbessert zwar die Datenqualität, schließt aber Personen mit diskontinuierlichen oder kürzeren Karrieren aus. Da Schauspielerinnen im Schnitt kürzere Karrieren haben als Schauspieler, könnte auch dieser Filter eine strukturelle Verzerrung zugunsten der gut dokumentierten, stabilen Karrieren – tendenziell männlich – einführen.
 
 Die binäre Geschlechtskategorisierung ist eine weitere wesentliche Einschränkung. WikiData erfasst Geschlecht überwiegend binär, was bedeutet dass nicht-binäre und genderdiverse Personen in der Analyse vollständig unsichtbar bleiben. Aus intersektionaler Perspektive ist dies besonders problematisch: Crenshaw zeigt, dass Diskriminierung selten eindimensional ist und sich Geschlecht mit Ethnizität, Klasse, Alter und anderen Faktoren überlagert [@crenshaw1989]. Eine Analyse, die nur zwischen männlich und weiblich unterscheidet, kann diese Überlagerungen nicht abbilden und homogenisiert damit sehr unterschiedliche Erfahrungen unter einer einheitlichen Kategorie.
 
